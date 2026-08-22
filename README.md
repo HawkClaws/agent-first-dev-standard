@@ -5,6 +5,7 @@
 特定のエージェント製品には依存しません。どのエージェントを使うチームでも(混在していても)適用できます。
 
 - 本体: [standard.md](standard.md)
+- **スキル(基準を日常フローとして実行する4本)**: [skills/](skills/) — design-memo / gen-tests / pr-guide / first-review
 - PRテンプレート: [templates/pr-template.md](templates/pr-template.md)
 - 変更履歴: [CHANGELOG.md](CHANGELOG.md)
 

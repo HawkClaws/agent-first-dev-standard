@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.5 (2026-08-22)
+
+- `skills/` を新設: 基準の運用部分をエージェント用スキル4本として実装(design-memo / gen-tests / pr-guide / first-review)
+- 設計思想「空欄=Human-in-the-Loopの定義」を skills/README.md に明文化。スキルは準備と機械検査のみを自動化し、判断(合意・怪しい箇所の名指し・裁定・分類の確定・マージ)は空欄として人間に残す
+- 素通りされる空欄の観察による権限移譲の運用(偽のHITLか、萎え始めた本物かの判定)を追加
+- 基準本文は§7にスキルへの参照を追加したのみ
+
 ## v0.4 (2026-08-22)
 
 - 理解負債に先行概念(comprehension debt / Triple Debt Model)への参照を追加
