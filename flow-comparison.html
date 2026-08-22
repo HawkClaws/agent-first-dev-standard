@@ -74,35 +74,27 @@
   .sub { color: var(--muted); font-size: .88rem; margin: 0 0 1.25rem; }
 
   /* ---- 理解コストの配分図 ---- */
-  .pf { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.3rem 1.15rem 1.1rem; }
-  .pf-legend { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; list-style: none; margin: 0 0 1.15rem; padding: 0; font-size: .78rem; color: var(--muted); }
-  .pf-legend li { display: flex; align-items: center; gap: .4rem; }
-  .pf-key { width: 1.5rem; height: .62rem; border-radius: 2px; flex: none; }
-  .pf-key.in { background: var(--accent); }
-  .pf-key.out { background: repeating-linear-gradient(-45deg, var(--warn) 0 3px, transparent 3px 6px), var(--warn-soft); border: 1px solid var(--warn); }
-
-  .pf-row { display: grid; grid-template-columns: 5.6rem 1fr; gap: 0 .9rem; padding: .5rem 0; border-top: 1px solid var(--line); }
-  .pf-row:first-of-type { border-top: none; }
-  .pf-row.is-total { border-top: 2px solid var(--line); margin-top: .35rem; padding-top: .7rem; }
-  .pf-stage { font-family: "IBM Plex Mono", monospace; font-size: .74rem; color: var(--muted); padding-top: .15rem; }
-  .pf-row.is-total .pf-stage { color: var(--ink); font-weight: 700; }
-  .pf-line { display: flex; align-items: center; gap: .55rem; margin: .18rem 0; }
-  .pf-tag { font-family: "IBM Plex Mono", monospace; font-size: .66rem; letter-spacing: .06em; color: var(--muted); width: 3.1rem; flex: none; text-align: right; }
-  .pf-tag.is-after { color: var(--accent-ink); }
-  .pf-track { flex: 1 1 auto; display: flex; height: .72rem; background: var(--ai); border-radius: 3px; overflow: hidden; }
-  .pf-row.is-total .pf-track { height: 1.05rem; }
-  .pf-track i { display: block; height: 100%; }
-  .pf-track i.in { background: var(--accent); }
-  .pf-track i.out { background: repeating-linear-gradient(-45deg, var(--warn) 0 3px, transparent 3px 6px), var(--warn-soft); }
-  .pf-zero { font-size: .7rem; color: var(--muted); }
-
-  .pf-total { font-size: .8rem; color: var(--muted); margin: 1.1rem 0 0; padding-top: .85rem; border-top: 1px dashed var(--line); }
-  .pf-total strong { color: var(--ink); font-weight: 700; }
-  .pf-caveat { font-size: .75rem; color: var(--muted); margin: .5rem 0 0; }
-  @media (max-width: 560px) {
-    .pf-row { grid-template-columns: 1fr; gap: .1rem; }
-    .pf-stage { padding-top: 0; }
+  .pf { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.4rem 1.25rem 1.15rem; }
+  .pf-side { font-family: "IBM Plex Mono", monospace; font-size: .76rem; letter-spacing: .1em; color: var(--muted); margin: 0 0 .3rem; }
+  .pf-side.is-after { color: var(--accent-ink); }
+  .pf-track { display: flex; height: 2.5rem; border-radius: 6px; overflow: hidden; }
+  .pf-track span {
+    display: flex; align-items: center; justify-content: center;
+    font-size: .78rem; line-height: 1.25; text-align: center;
+    padding: 0 .3rem; overflow: hidden; white-space: nowrap;
   }
+  .pf-track .in { background: var(--accent); color: var(--paper); font-weight: 500; }
+  .pf-track .out {
+    color: var(--warn); font-weight: 500;
+    background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--warn) 55%, transparent) 0 5px, transparent 5px 11px), var(--warn-soft);
+  }
+  .pf-where { font-size: .8rem; color: var(--muted); margin: .45rem 0 0; }
+  .pf-where b { color: var(--ink); font-weight: 500; }
+  .pf-block + .pf-block { margin-top: 1.5rem; }
+  .pf-total { font-size: .82rem; color: var(--muted); margin: 1.5rem 0 0; padding-top: .9rem; border-top: 1px dashed var(--line); }
+  .pf-total strong { color: var(--ink); font-weight: 700; }
+  .pf-caveat { font-size: .75rem; color: var(--muted); margin: .55rem 0 0; }
+  @media (max-width: 560px) { .pf-track span { font-size: .72rem; } }
 
   /* ---- 凡例 ---- */
   .legend { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; margin: 0 0 1.25rem; padding: 0; list-style: none; font-size: .82rem; color: var(--muted); }
@@ -142,6 +134,7 @@
   }
   .before { border-right: 1px solid var(--line); }
   .before, .after { font-size: .9rem; }
+  .after { background: var(--accent-soft); }
   .after { background: color-mix(in srgb, var(--accent-soft) 34%, var(--surface)); }
 
   .cell-title { font-weight: 700; font-size: .92rem; }
@@ -157,7 +150,7 @@
     white-space: nowrap;
   }
   .chip.pain  { background: var(--warn-soft); color: var(--warn); }
-  .chip.skill { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+  .chip.skill { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
   .chip.human { background: var(--accent); color: var(--paper); }
   .chip.same  { background: var(--ai); color: var(--muted); }
 
@@ -194,68 +187,26 @@
   </header>
 
   <figure class="pf">
-    <ul class="pf-legend">
-      <li><span class="pf-key in"></span>見積りに入っている作業</li>
-      <li><span class="pf-key out"></span>見積り外の不意打ち</li>
-    </ul>
-      <div class="pf-row">
-        <div class="pf-stage">着手</div>
-        <div>
-          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"></div><span class="pf-zero">ここでは払わない</span></div>
-          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:16%"></i></div></div>
-        </div>
+    <div class="pf-block">
+      <p class="pf-side">従来</p>
+      <div class="pf-track" role="img" aria-label="従来は、理解コストのほぼ全部が見積り外の不意打ちとして届く">
+        <span class="in" style="width:6%"></span>
+        <span class="out" style="width:94%">見積り外の不意打ちとして届く</span>
       </div>
-      <div class="pf-row">
-        <div class="pf-stage">実装</div>
-        <div>
-          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"></div><span class="pf-zero">AIに委譲</span></div>
-          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"></div><span class="pf-zero">AIに委譲(変更なし)</span></div>
-        </div>
+      <p class="pf-where">届く場所 → <b>レビュー</b>(文脈ゼロから全行) / <b>マージ</b>(判断の基準がない) / <b>障害対応</b>(聞くしかない)</p>
+    </div>
+
+    <div class="pf-block">
+      <p class="pf-side is-after">導入後</p>
+      <div class="pf-track" role="img" aria-label="導入後は、ほぼ同じ量が見積りに入った計画された作業に置き換わる">
+        <span class="in" style="width:92%">見積りに入った作業として払う</span>
+        <span class="out" style="width:8%"></span>
       </div>
-      <div class="pf-row">
-        <div class="pf-stage">PR作成</div>
-        <div>
-          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="in" style="width:6%"></i></div></div>
-          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:12%"></i></div></div>
-        </div>
-      </div>
-      <div class="pf-row">
-        <div class="pf-stage">レビュー</div>
-        <div>
-          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="out" style="width:38%"></i></div></div>
-          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:28%"></i></div></div>
-        </div>
-      </div>
-      <div class="pf-row">
-        <div class="pf-stage">マージ</div>
-        <div>
-          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="out" style="width:12%"></i></div></div>
-          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:8%"></i></div></div>
-        </div>
-      </div>
-      <div class="pf-row">
-        <div class="pf-stage">障害対応</div>
-        <div>
-          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="out" style="width:44%"></i></div></div>
-          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:16%"></i><i class="out" style="width:8%"></i></div></div>
-        </div>
-      </div>
-      <div class="pf-row">
-        <div class="pf-stage">定常運用</div>
-        <div>
-          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"></div><span class="pf-zero">この運用が無い</span></div>
-          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:12%"></i></div></div>
-        </div>
-      </div>
-      <div class="pf-row is-total">
-        <div class="pf-stage">合計</div>
-        <div>
-          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="in" style="width:6%"></i><i class="out" style="width:94%"></i></div></div>
-          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:92%"></i><i class="out" style="width:8%"></i></div></div>
-        </div>
-      </div>
-    <p class="pf-total">横幅=そこで人間が払う理解コスト。<strong>合計を同じ長さにしてあるのは、減ると主張できる実測がないからである。</strong>短期ではむしろ少し増える(下の「正直な収支」:チケットあたり +20分前後 + 定常運用分)。この基準が変えるのは総量ではなく、<strong>いつ払うか</strong>と、<strong>それが見積りに入っているか</strong>。従来は請求のほぼ全部が斜線——レビューの文脈ゼロ読解・根拠のないマージ・障害時の手探り——として不意に届く。導入後は同じ量が、着手の設計メモと濃淡を指定したレビューという<strong>計画された作業</strong>に置き換わる。</p>
-    <p class="pf-caveat">※ 実測値ではなく、この基準が狙う配分の模式図。総量がどう動くかは各チームが実測する項目(レビュー時間・障害対応時間・切り分け成功率 → 基準§7)。「定常運用」は地図の維持・裁定・訓練にかかる時間で、基準§12がこれ自体の計上を要求している。</p>
+      <p class="pf-where">払う場所 → <b>着手</b>(設計メモ 10〜15分) / <b>レビュー</b>(濃淡を指定して読む) / <b>定常運用</b>(地図の維持・裁定・訓練)</p>
+    </div>
+
+    <p class="pf-total">横幅=人間が払う理解コストの総量。<strong>2本を同じ長さにしてあるのは、減ると主張できる実測がないからである。</strong>短期ではむしろ少し増える(下の「正直な収支」:チケットあたり +20分前後 + 定常運用分)。この基準が変えるのは総量ではなく、<strong>それが見積りに入っているか</strong>——斜線が色に反転すること、それだけが導入の効果である。</p>
+    <p class="pf-caveat">※ 実測値ではなく、この基準が狙う配分の模式図。総量がどう動くかは各チームが実測する項目(レビュー時間・障害対応時間・切り分け成功率 → 基準§7)。段階ごとの中身は下の表に、増える手間の内訳は「正直な収支」に。</p>
   </figure>
 
   <details class="terms">
