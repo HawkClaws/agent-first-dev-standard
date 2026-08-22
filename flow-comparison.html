@@ -69,11 +69,50 @@
   .lede { color: var(--muted); max-width: 44rem; margin: 0; }
 
   figure { margin: 2.5rem 0 0; }
-  figure svg { max-width: 100%; height: auto; display: block; }
-  figcaption { font-size: .82rem; color: var(--muted); margin-top: .5rem; }
 
   h2 { font-size: 1.25rem; font-weight: 700; margin: 3rem 0 .35rem; }
   .sub { color: var(--muted); font-size: .88rem; margin: 0 0 1.25rem; }
+
+  /* ---- 理解コストのプロフィール図 ---- */
+  .cf { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.35rem 1.15rem 1rem; }
+  .cf-scroll { overflow-x: auto; }
+  .cf-grid { display: grid; grid-template-columns: 4.8rem repeat(5, minmax(4.6rem, 1fr)); gap: 0 .5rem; align-items: end; }
+  .cf-rowlabel {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .74rem; letter-spacing: .1em; color: var(--muted);
+    padding-bottom: .35rem; align-self: end;
+  }
+  .cf-rowlabel.is-after { color: var(--accent-ink); font-weight: 500; }
+  .cf-cell { display: flex; flex-direction: column; justify-content: flex-end; min-height: 96px; }
+  .cf-bar { border-radius: 5px 5px 0 0; }
+  .cf-bar.warn { background: var(--warn); }
+  .cf-bar.acc { background: var(--accent); }
+  .cf-bar.zero { height: 3px; border-radius: 2px; background: var(--line); }
+  .h-xl { height: 78px; } .h-m { height: 40px; } .h-s { height: 21px; }
+  .cf-tag { font-size: .7rem; line-height: 1.35; color: var(--muted); text-align: center; margin-top: .35rem; min-height: 2.7em; }
+  .cf-tag strong { display: block; color: var(--ink); font-weight: 500; }
+  .cf-stages { border-top: 1px solid var(--line); margin-top: .1rem; padding-top: .45rem; }
+  .cf-stage {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .72rem; color: var(--muted); text-align: center;
+  }
+  .cf-total { font-size: .8rem; color: var(--muted); margin: 1rem 0 0; padding-top: .8rem; border-top: 1px dashed var(--line); }
+  .cf-total strong { color: var(--ink); font-weight: 700; }
+  @media (max-width: 680px) { .cf-grid { min-width: 31rem; } }
+
+  /* ---- 凡例 ---- */
+  .legend { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; margin: 0 0 1.25rem; padding: 0; list-style: none; font-size: .82rem; color: var(--muted); }
+  .legend li { display: flex; align-items: baseline; gap: .4rem; }
+  .legend .chip { margin: 0; }
+
+  /* ---- この図の言葉 ---- */
+  .terms { margin: 1.5rem 0 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
+  .terms > summary { padding: .7rem 1.1rem; cursor: pointer; font-size: .86rem; font-weight: 500; }
+  .terms > summary::marker { color: var(--accent); }
+  .terms dl { margin: 0; padding: 0 1.1rem 1rem; display: grid; grid-template-columns: 7.5rem 1fr; gap: .3rem .9rem; font-size: .85rem; }
+  .terms dt { font-weight: 700; }
+  .terms dd { margin: 0; color: var(--muted); }
+  @media (max-width: 520px) { .terms dl { grid-template-columns: 1fr; gap: .05rem; } .terms dd { margin-bottom: .55rem; } }
 
   /* ---- 比較グリッド ---- */
   .cmp { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
@@ -147,58 +186,56 @@
   <header>
     <p class="eyebrow">Before / After — Agent-First Development</p>
     <h1>理解コストの引っ越し</h1>
-    <p class="lede">エージェント前提開発基準(v0.6)+スキル5本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
+    <p class="lede">エージェント前提開発基準(v0.7)+スキル5本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
   </header>
 
-  <figure>
-    <svg viewBox="0 0 860 260" role="img" aria-label="従来は理解コストがレビューに一括で届くが、導入後は先払い・減らす・計上の三箇所に分散される">
-      <defs>
-        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
-        </marker>
-      </defs>
-      <g fill="none" stroke="currentColor" stroke-width="1.4" font-family="'Zen Kaku Gothic New',sans-serif">
-        <!-- 従来 -->
-        <text x="16" y="30" fill="currentColor" stroke="none" font-size="13" font-weight="700">従来</text>
-        <rect x="90"  y="44" width="150" height="46" rx="8"/>
-        <text x="165" y="72" fill="currentColor" stroke="none" font-size="13" text-anchor="middle">実装(AIに委譲)</text>
-        <line x1="240" y1="67" x2="330" y2="67" marker-end="url(#arr)"/>
-        <rect x="334" y="30" width="240" height="74" rx="8" stroke="var(--warn)" stroke-width="2.5"/>
-        <text x="454" y="60" fill="var(--warn)" stroke="none" font-size="13" font-weight="700" text-anchor="middle">レビュー</text>
-        <text x="454" y="82" fill="var(--warn)" stroke="none" font-size="11.5" text-anchor="middle">理解コストの請求が全部ここに届く</text>
-        <line x1="574" y1="67" x2="660" y2="67" marker-end="url(#arr)"/>
-        <rect x="664" y="44" width="120" height="46" rx="8"/>
-        <text x="724" y="72" fill="currentColor" stroke="none" font-size="13" text-anchor="middle">マージ(不安)</text>
+  <figure class="cf">
+    <div class="cf-scroll">
+      <div class="cf-grid" role="img" aria-label="従来は理解コストがレビューとマージに集中するが、導入後は着手・PR作成・レビュー・マージに分散する。総量はほぼ変わらない。">
+        <div class="cf-rowlabel">従来</div>
+        <div class="cf-cell"><div class="cf-bar zero"></div><div class="cf-tag"></div></div>
+        <div class="cf-cell"><div class="cf-bar zero"></div><div class="cf-tag"></div></div>
+        <div class="cf-cell"><div class="cf-bar zero"></div><div class="cf-tag"></div></div>
+        <div class="cf-cell"><div class="cf-bar warn h-xl"></div><div class="cf-tag"><strong>請求が全部ここ</strong>文脈ゼロから全行</div></div>
+        <div class="cf-cell"><div class="cf-bar warn h-m"></div><div class="cf-tag"><strong>不安か過信</strong>判断の基準がない</div></div>
 
-        <!-- 区切り -->
-        <line x1="16" y1="128" x2="844" y2="128" stroke-dasharray="3 5" opacity="0.5"/>
+        <div class="cf-rowlabel is-after">導入後</div>
+        <div class="cf-cell"><div class="cf-bar acc h-m"></div><div class="cf-tag"><strong>先払い</strong>設計メモ 10〜15分</div></div>
+        <div class="cf-cell"><div class="cf-bar zero"></div><div class="cf-tag">委譲のまま</div></div>
+        <div class="cf-cell"><div class="cf-bar acc h-s"></div><div class="cf-tag"><strong>減らす</strong>濃淡の指定</div></div>
+        <div class="cf-cell"><div class="cf-bar acc h-m"></div><div class="cf-tag"><strong>計上済み</strong>指定された濃淡で</div></div>
+        <div class="cf-cell"><div class="cf-bar acc h-s"></div><div class="cf-tag"><strong>確認</strong>地図で追跡できるか</div></div>
 
-        <!-- 導入後 -->
-        <text x="16" y="158" fill="currentColor" stroke="none" font-size="13" font-weight="700">導入後</text>
-        <rect x="90" y="172" width="130" height="46" rx="8" stroke="var(--accent)"/>
-        <text x="155" y="192" fill="var(--accent)" stroke="none" font-size="12.5" font-weight="700" text-anchor="middle">設計メモ</text>
-        <text x="155" y="208" fill="var(--accent)" stroke="none" font-size="11" text-anchor="middle">先払い</text>
-        <line x1="220" y1="195" x2="252" y2="195" marker-end="url(#arr)"/>
-        <rect x="256" y="172" width="130" height="46" rx="8"/>
-        <text x="321" y="200" fill="currentColor" stroke="none" font-size="13" text-anchor="middle">実装(委譲)</text>
-        <line x1="386" y1="195" x2="418" y2="195" marker-end="url(#arr)"/>
-        <rect x="422" y="172" width="160" height="46" rx="8" stroke="var(--accent)"/>
-        <text x="502" y="192" fill="var(--accent)" stroke="none" font-size="12.5" font-weight="700" text-anchor="middle">PRガイド+一次レビュー</text>
-        <text x="502" y="208" fill="var(--accent)" stroke="none" font-size="11" text-anchor="middle">減らす(隔離と濃淡)</text>
-        <line x1="582" y1="195" x2="614" y2="195" marker-end="url(#arr)"/>
-        <rect x="618" y="172" width="130" height="46" rx="8"/>
-        <text x="683" y="192" fill="currentColor" stroke="none" font-size="12.5" text-anchor="middle">レビュー(濃淡)</text>
-        <text x="683" y="208" fill="currentColor" stroke="none" font-size="11" text-anchor="middle">計上済みの作業</text>
-        <line x1="748" y1="195" x2="780" y2="195" marker-end="url(#arr)"/>
-        <rect x="784" y="172" width="60" height="46" rx="8"/>
-        <text x="814" y="200" fill="currentColor" stroke="none" font-size="12.5" text-anchor="middle">マージ</text>
-      </g>
-    </svg>
-    <figcaption>図: 実装が理解の時間を兼ねなくなった結果、従来は理解コストがレビューに一括で届く。導入後は「先払い(設計メモ)・減らす(隔離と濃淡)・計上する(見積りに含める)」の三箇所に分散される。</figcaption>
+        <div class="cf-stages"></div>
+        <div class="cf-stages cf-stage">着手</div>
+        <div class="cf-stages cf-stage">実装</div>
+        <div class="cf-stages cf-stage">PR作成</div>
+        <div class="cf-stages cf-stage">レビュー</div>
+        <div class="cf-stages cf-stage">マージ</div>
+      </div>
+    </div>
+    <p class="cf-total">棒の高さ=そこで人間が払う理解コスト。<strong>総量は減っていない。</strong>実装が理解の時間を兼ねなくなった分の請求書は消えず、従来はレビューとマージに集中して届く。導入後はそれを<strong>先払い(設計メモ)・減らす(隔離と濃淡)・計上する(見積りに入れる)</strong>の三つに割り直しただけである。速くなる基準ではなく、払う場所を選べるようにする基準。</p>
   </figure>
 
+  <details class="terms">
+    <summary>この図で使う言葉(5つ)</summary>
+    <dl>
+      <dt>契約</dt><dd>呼ぶ側と呼ばれる側の取り決め。「この入力を渡せば、この出力が返る。失敗するときはこう失敗する」</dd>
+      <dt>濃淡</dt><dd>理解の深さを3段階で指定すること。契約理解(一文で言える)/構造理解(データの流れを説明できる)/行レベル理解(一行ずつ説明できる)</dd>
+      <dt>不可逆系</dt><dd>やり直しが効かないもの。DBスキーマ変更・データ移行・課金・外部送信・削除。ここは行レベル理解が必須</dd>
+      <dt>地図</dt><dd>何がどこに繋がっているか・契約・壊してはいけない条件・危険箇所を、判断に使える短さでまとめたもの</dd>
+      <dt>裁定</dt><dd>実装を見せずに別セッションが書いたテストが落ちたとき、どちらの解釈が意図だったかを人間が決めること</dd>
+    </dl>
+  </details>
+
   <h2>段階別の変化</h2>
-  <p class="sub">左が現在、右が導入後。<span class="chip pain">▲ 痛点</span> <span class="chip skill">/skill</span>=スキルが下書き・機械検査 <span class="chip human">人間</span>=空欄として残る判断(Human-in-the-Loop) <span class="chip same">変更なし</span></p>
+  <p class="sub">左が現在、右が導入後。</p>
+  <ul class="legend">
+    <li><span class="chip pain">▲ 痛点</span> いま困っていること</li>
+    <li><span class="chip skill">/skill</span> スキルが下書きと機械検査をやる</li>
+    <li><span class="chip human">人間</span> 空欄として残る判断(Human-in-the-Loop)</li>
+    <li><span class="chip same">変更なし</span> 従来のまま</li>
+  </ul>
 
   <div class="cmp">
     <div class="cmp-head"><div>段階</div><div>従来</div><div class="after-h">導入後</div></div>
@@ -234,7 +271,7 @@
       <div class="before">
         <div class="cell-title">実装と同じセッションがテストも書く</div>
         <div class="cell-note">実装に合わせたテストが通るだけ</div>
-        <span class="chip pain">▲ 同語反復(検証になっていない)</span>
+        <span class="chip pain">▲ 自作自演(検証になっていない)</span>
       </div>
       <div class="after">
         <div class="cell-title">構造理解以上(不可逆系は必須)、実装を見せない別セッションが仕様から生成</div>
@@ -278,7 +315,7 @@
       </div>
       <div class="after">
         <div class="cell-title">基準:障害時に「どの箱が壊れたか」言えるか</div>
-        <div class="cell-note">全行トレースではなく地図レベル。マージ=地図でトレースできる状態の確認(一次対応はオンコールのロール)</div>
+        <div class="cell-note">全行の追跡ではなく地図レベル。マージ=地図で追跡できる状態の確認(一次対応はオンコールのロール)</div>
         <span class="chip human">決断(責任)</span>
       </div>
     </div>
@@ -316,7 +353,7 @@
       <ul>
         <li>文脈ゼロからのレビュー読解</li>
         <li>全行精読(濃淡の指定で置換)</li>
-        <li>テストの同語反復</li>
+        <li>テストの自作自演</li>
         <li>マージ時の根拠のない不安</li>
         <li>障害時の「聞くしかない」状態</li>
       </ul>
@@ -332,7 +369,7 @@
   </div>
 
   <footer>
-    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.6)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
+    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.7)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
   </footer>
 </div>
 

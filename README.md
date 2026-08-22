@@ -4,11 +4,19 @@
 
 特定のエージェント製品には依存しません。どのエージェントを使うチームでも(混在していても)適用できます。
 
-- 本体: [standard.md](standard.md)
-- **導入前後のフロー比較図**: [flow-comparison](https://hawkclaws.github.io/agent-first-dev-standard/flow-comparison.html) — 何が変わり、何が変わらないか(GitHub Pages)
-- **スキル(基準を日常フローとして実行する5本)**: [skills/](skills/) — design-memo / gen-tests / pr-guide / first-review / update-map
-- PRテンプレート: [templates/pr-template.md](templates/pr-template.md)
-- 変更履歴: [CHANGELOG.md](CHANGELOG.md)
+### 🗺 まずはこの1枚 — [導入前後のフロー比較図](https://hawkclaws.github.io/agent-first-dev-standard/flow-comparison.html)
+
+この基準を入れると、開発フローの**何が変わり、何が変わらないか**を1画面で見られます。基準本文を読む前の全体像として、また導入をチームに提案するときの説明用に。
+
+### ドキュメント
+
+| | |
+|---|---|
+| [**standard.md**](standard.md) | 基準本文。これが規範 |
+| [**skills/**](skills/) | 基準を日常フローとして実行するスキル5本(design-memo / gen-tests / pr-guide / first-review / update-map) |
+| [flow-comparison](https://hawkclaws.github.io/agent-first-dev-standard/flow-comparison.html) | 導入前後のフロー比較図(GitHub Pages) |
+| [templates/pr-template.md](templates/pr-template.md) | PRテンプレート |
+| [CHANGELOG.md](CHANGELOG.md) | 変更履歴 |
 
 ## 思想(3行)
 
@@ -22,7 +30,7 @@
 
 ## 関連する先行事例・研究(2026年8月調査)
 
-主要OSSプロジェクトのAI生成コードポリシーは、いずれも一律の扱いを定めている:[QEMU](https://www.qemu.org/docs/master/devel/code-provenance.html)(AI生成コンテンツを拒否)/ [Gentoo](https://wiki.gentoo.org/wiki/Project:Council/AI_policy)(全面禁止)/ [NetBSD](https://www.netbsd.org/developers/commit-guidelines.html)(汚染推定+コア承認)/ [Fedora](https://communityblog.fedoraproject.org/council-policy-proposal-policy-on-ai-assisted-contributions/)(許可+説明責任と開示)/ [curl](https://github.com/curl/curl/blob/master/docs/CONTRIBUTE.md)(通常品質基準+開示)。
+主要OSSプロジェクトのAI生成コードポリシーは、いずれも一律の扱いを定めている:[QEMU](https://www.qemu.org/docs/master/devel/code-provenance.html)(AI生成コンテンツを拒否)/ [Gentoo](https://wiki.gentoo.org/wiki/Project:Council/AI_policy)(全面禁止)/ [NetBSD](https://www.netbsd.org/developers/commit-guidelines.html)(汚染推定+コア承認)/ [Fedora](https://communityblog.fedoraproject.org/council-policy-proposal-policy-on-ai-assisted-contributions/)(許可+説明責任と開示。提案は2025年10月に[承認](https://lwn.net/Articles/1042947/))/ [curl](https://github.com/curl/curl/blob/master/docs/CONTRIBUTE.md)(通常品質基準+開示)。
 
 コードの性質に応じて**理解の深さを段階化**した公開基準は、これらにも政府系ガイドラインにも確認できていない。関連研究として、リスクに応じて監督形態を段階化する [Graduated Human Oversight(arXiv:2606.22484)](https://arxiv.org/pdf/2606.22484) がある(軸が異なる)。「無い」ことの証明はできないので、既存の類似基準をご存知であればissueで教えてほしい。
 
