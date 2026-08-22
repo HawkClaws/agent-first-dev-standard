@@ -5,6 +5,7 @@
 特定のエージェント製品には依存しません。どのエージェントを使うチームでも(混在していても)適用できます。
 
 - 本体: [standard.md](standard.md)
+- PRテンプレート: [templates/pr-template.md](templates/pr-template.md)
 - 変更履歴: [CHANGELOG.md](CHANGELOG.md)
 
 ## 思想(3行)
