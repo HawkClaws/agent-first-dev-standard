@@ -25,10 +25,14 @@ PR作成
 
 ## 導入
 
-**Claude Code:** 各ディレクトリをプロジェクトの `.claude/skills/` にコピーする。
+SKILL.md形式は [Agent Skills Open Standard](https://agentskills.io) としてClaude Code・Codex CLI・Cursor等の多数のエージェントに採用されている。**中身の書き換えは不要で、コピー先だけが違う。**
 
 ```bash
+# Claude Code
 cp -r skills/design-memo skills/gen-tests skills/pr-guide skills/first-review <your-repo>/.claude/skills/
+
+# Codex CLI(.agents/skills/ を走査する。公式: https://developers.openai.com/codex/skills)
+cp -r skills/design-memo skills/gen-tests skills/pr-guide skills/first-review <your-repo>/.agents/skills/
 ```
 
-**他のエージェント:** 各 `SKILL.md` の本文は製品非依存の手順書として書かれている。使用するエージェントのカスタム指示・プロンプトとしてそのまま移植できる。
+上記以外のエージェントでも、各 `SKILL.md` の本文は製品非依存の手順書として書かれているため、カスタム指示・プロンプトとしてそのまま移植できる。
