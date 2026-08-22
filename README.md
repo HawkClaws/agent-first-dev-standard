@@ -6,7 +6,7 @@
 
 - 本体: [standard.md](standard.md)
 - **導入前後のフロー比較図**: [flow-comparison](https://hawkclaws.github.io/agent-first-dev-standard/flow-comparison.html) — 何が変わり、何が変わらないか(GitHub Pages)
-- **スキル(基準を日常フローとして実行する4本)**: [skills/](skills/) — design-memo / gen-tests / pr-guide / first-review
+- **スキル(基準を日常フローとして実行する5本)**: [skills/](skills/) — design-memo / gen-tests / pr-guide / first-review / update-map
 - PRテンプレート: [templates/pr-template.md](templates/pr-template.md)
 - 変更履歴: [CHANGELOG.md](CHANGELOG.md)
 

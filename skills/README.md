@@ -8,31 +8,36 @@
 チケット着手
   └─ /design-memo   … 方針メモの下書き → 著者が直してチームに流す(先払い)
 実装(エージェントに委譲)
-  └─ /gen-tests     … 不可逆系のみ。実装を見せない独立生成(§4)
+  └─ /gen-tests     … 構造理解以上(不可逆系は必須)。実装を見せない独立生成(§4)
 PR作成
   └─ /pr-guide      … レビューガイドの機械記入欄を下書き。判断欄は空欄で返す(§9)
   └─ /first-review  … AI一次レビュー。人間の見るべき箇所を絞り込む(§7)
 人間レビュー → マージ(人間の決断)
+─────────────────────────
+障害対応後・契約や危険領域を変える変更後・月イチの定期検査
+  └─ /update-map    … 理解の地図(§11)の初版生成・更新・コードとの矛盾検査。所有と裁定は人間
 ```
 
 ## 設計思想:空欄がHuman-in-the-Loopの定義
 
-スキルが自動化するのは**準備と機械検査だけ**。判断——設計メモへの合意、「一番怪しい箇所」の名指し、独立テストの不一致の裁定、理解レベルの確定、マージの決断——は、出力の**空欄**として物理的に人間に残す。
+スキルが自動化するのは**準備・機械検査・判断の候補提示まで**。判断——設計メモへの合意、「一番怪しい箇所」の名指し、独立テストの不一致の裁定、理解レベルの確定、マージの決断——は、出力の**空欄**として人間に残す。
 
 空欄は手抜きではなく仕様である。全部自動化しようとして、原理的に自動化できずに残った箇所が、このフローにおける人間の担当の定義になっている。
+
+正直に書くと、**空欄は強制ではなく規約である**。スキルは埋めない仕様だが、著者がスキルを迂回して別のAIに埋めさせることは技術的に可能で、検知もできない。空欄を守らせる力は仕組みではなく、チームの規約と口頭確認(基準§9:「なぜそこが一番怪しいのか」を著者に聞く)にある。スキルが保証するのは、**正規のフロー自体が形骸化の供給源にならない**ことまでである。
 
 運用が乗ったら、空欄の扱われ方自体を観察してほしい。ある空欄が毎回そのまま素通りしているなら、可能性は2つ——**偽のHITLポイント**(実は人間が要らなかった → 欄を削る=権限移譲の実績判断)か、**萎え始めた本物**(判断すべきなのに省略され始めた → 訓練対象)。どちらかをチームで判定する。基準§7「実績が出た方向に権限を移す」を、空欄単位で実行する仕組みである。
 
 ## 導入
 
-SKILL.md形式は [Agent Skills Open Standard](https://agentskills.io) としてClaude Code・Codex CLI・Cursor等の多数のエージェントに採用されている。**中身の書き換えは不要で、コピー先だけが違う。**
+SKILL.md形式は [Agent Skills Open Standard](https://agentskills.io) としてClaude Code・Codex CLI・Cursor等の多数のエージェントに採用されている。**中身の書き換えは不要で、コピー先だけが違う。** pr-guideが参照するPRテンプレートは `pr-guide/assets/` に同梱してあり、ディレクトリごとコピーすれば動く(正本は [templates/pr-template.md](../templates/pr-template.md)。編集時は両方を同期すること)。gen-testsのツール制限付きサブエージェント定義は SKILL.md 内の例を `.claude/agents/` に置く。
 
 ```bash
 # Claude Code
-cp -r skills/design-memo skills/gen-tests skills/pr-guide skills/first-review <your-repo>/.claude/skills/
+cp -r skills/design-memo skills/gen-tests skills/pr-guide skills/first-review skills/update-map <your-repo>/.claude/skills/
 
 # Codex CLI(.agents/skills/ を走査する。公式: https://developers.openai.com/codex/skills)
-cp -r skills/design-memo skills/gen-tests skills/pr-guide skills/first-review <your-repo>/.agents/skills/
+cp -r skills/design-memo skills/gen-tests skills/pr-guide skills/first-review skills/update-map <your-repo>/.agents/skills/
 ```
 
 上記以外のエージェントでも、各 `SKILL.md` の本文は製品非依存の手順書として書かれているため、カスタム指示・プロンプトとしてそのまま移植できる。

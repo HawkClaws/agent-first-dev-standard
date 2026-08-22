@@ -147,7 +147,7 @@
   <header>
     <p class="eyebrow">Before / After — Agent-First Development</p>
     <h1>理解コストの引っ越し</h1>
-    <p class="lede">エージェント前提開発基準(v0.5)+スキル4本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
+    <p class="lede">エージェント前提開発基準(v0.6)+スキル5本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
   </header>
 
   <figure>
@@ -237,7 +237,7 @@
         <span class="chip pain">▲ 同語反復(検証になっていない)</span>
       </div>
       <div class="after">
-        <div class="cell-title">不可逆系のみ、実装を見せない別セッションが仕様から生成</div>
+        <div class="cell-title">構造理解以上(不可逆系は必須)、実装を見せない別セッションが仕様から生成</div>
         <div class="cell-note">落ちたテスト=仕様が2通りに読めた証拠。裁定して仕様に書き戻す</div>
         <span class="chip skill">/gen-tests</span><span class="chip human">裁定</span>
       </div>
@@ -265,7 +265,7 @@
       </div>
       <div class="after">
         <div class="cell-title">機械検査はAIが先に潰し、人間は指定された濃淡で読む</div>
-        <div class="cell-note">人間の対象は設計判断・契約の妥当性・行レベル箇所のみ。レビューは見積りに計上された作業になる</div>
+        <div class="cell-note">人間の対象は設計判断・契約の妥当性・構造理解対象のデータフロー・行レベル箇所。レビューは見積りに計上された作業になる</div>
         <span class="chip skill">/first-review</span><span class="chip human">設計と契約の判断</span>
       </div>
     </div>
@@ -278,7 +278,7 @@
       </div>
       <div class="after">
         <div class="cell-title">基準:障害時に「どの箱が壊れたか」言えるか</div>
-        <div class="cell-note">全行トレースではなく地図レベル。マージ=一次対応責任の宣言</div>
+        <div class="cell-note">全行トレースではなく地図レベル。マージ=地図でトレースできる状態の確認(一次対応はオンコールのロール)</div>
         <span class="chip human">決断(責任)</span>
       </div>
     </div>
@@ -292,8 +292,8 @@
       </div>
       <div class="after">
         <div class="cell-title">地図で壊れた箱を特定 → 必要な箇所だけAIと降りる</div>
-        <div class="cell-note">緩和と修正を分離できる。incidents.mdに1行記録し、判明したことを地図へ書き戻す</div>
-        <span class="chip human">仮説と切り分け</span>
+        <div class="cell-note">緩和と修正を分離できる。判明した仕様・依存・注意点を地図へ書き戻す(地図の生成・更新・矛盾検査はスキル化済み)</div>
+        <span class="chip skill">/update-map</span><span class="chip human">仮説と切り分け</span>
       </div>
     </div>
   </div>
@@ -306,8 +306,9 @@
       <ul>
         <li>設計メモ 10〜15分/チケット</li>
         <li>PRの空欄2つを自分で書く</li>
-        <li>障害記録 1行/件</li>
-        <li>目安: チケットあたり +20分前後</li>
+        <li>障害時の地図への書き戻し 数分/件</li>
+        <li>独立テストの裁定・訓練・地図維持(これらも見積りに計上する)</li>
+        <li>目安: チケットあたり +20分前後 + 定常運用分</li>
       </ul>
     </div>
     <div class="bcard gain">
@@ -331,7 +332,7 @@
   </div>
 
   <footer>
-    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.5)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
+    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.6)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
   </footer>
 </div>
 
