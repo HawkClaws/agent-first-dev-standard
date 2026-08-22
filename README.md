@@ -5,7 +5,7 @@
 特定のエージェント製品には依存しません。どのエージェントを使うチームでも(混在していても)適用できます。
 
 - 本体: [standard.md](standard.md)
-- **導入前後のフロー比較図**: [flow-comparison.md](flow-comparison.md) — 何が変わり、何が変わらないか
+- **導入前後のフロー比較図**: [flow-comparison.md](flow-comparison.md) — 何が変わり、何が変わらないか([読みやすいHTML版](https://hawkclaws.github.io/agent-first-dev-standard/flow-comparison.html)、GitHub Pages)
 - **スキル(基準を日常フローとして実行する4本)**: [skills/](skills/) — design-memo / gen-tests / pr-guide / first-review
 - PRテンプレート: [templates/pr-template.md](templates/pr-template.md)
 - 変更履歴: [CHANGELOG.md](CHANGELOG.md)

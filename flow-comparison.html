@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>理解コストの引っ越し</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F5F7F7;
+    --surface: #FFFFFF;
+    --ink: #1E2628;
+    --muted: #5D6A6E;
+    --line: #D8E0E1;
+    --accent: #0E7168;        /* 人間の判断・スキル */
+    --accent-ink: #0A554E;
+    --accent-soft: #E2EFEC;
+    --warn: #A4541A;          /* 従来の痛点 */
+    --warn-soft: #F6E9DC;
+    --ai: #EAEEEF;            /* AIがやる部分 */
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #141A1B;
+      --surface: #1C2325;
+      --ink: #E3EAEA;
+      --muted: #94A3A6;
+      --line: #2B3538;
+      --accent: #47BFAF;
+      --accent-ink: #6FD2C5;
+      --accent-soft: #1D2F2C;
+      --warn: #D89A62;
+      --warn-soft: #2F2519;
+      --ai: #232C2E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #141A1B;
+    --surface: #1C2325;
+    --ink: #E3EAEA;
+    --muted: #94A3A6;
+    --line: #2B3538;
+    --accent: #47BFAF;
+    --accent-ink: #6FD2C5;
+    --accent-soft: #1D2F2C;
+    --warn: #D89A62;
+    --warn-soft: #2F2519;
+    --ai: #232C2E;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 62rem; margin: 0 auto; padding: 3.5rem 1.25rem 4.5rem; }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .72rem; letter-spacing: .18em; color: var(--accent);
+    margin: 0 0 .6rem;
+  }
+  h1 { font-size: 1.9rem; font-weight: 700; line-height: 1.45; margin: 0 0 .6rem; text-wrap: balance; }
+  .lede { color: var(--muted); max-width: 44rem; margin: 0; }
+
+  figure { margin: 2.5rem 0 0; }
+  figure svg { max-width: 100%; height: auto; display: block; }
+  figcaption { font-size: .82rem; color: var(--muted); margin-top: .5rem; }
+
+  h2 { font-size: 1.25rem; font-weight: 700; margin: 3rem 0 .35rem; }
+  .sub { color: var(--muted); font-size: .88rem; margin: 0 0 1.25rem; }
+
+  /* ---- 比較グリッド ---- */
+  .cmp { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+  .cmp-head, .stage {
+    display: grid;
+    grid-template-columns: 6.2rem 1fr 1fr;
+  }
+  .cmp-head > div {
+    padding: .65rem 1rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .72rem; letter-spacing: .12em;
+    color: var(--muted);
+    border-bottom: 2px solid var(--line);
+  }
+  .cmp-head .after-h { color: var(--accent-ink); }
+  .stage { border-bottom: 1px solid var(--line); }
+  .stage:last-child { border-bottom: none; }
+  .stage > div { padding: .9rem 1rem 1rem; }
+  .stage-name {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .78rem; color: var(--muted);
+    padding-top: 1.05rem !important;
+  }
+  .before { border-right: 1px solid var(--line); }
+  .before, .after { font-size: .9rem; }
+  .after { background: color-mix(in srgb, var(--accent-soft) 34%, var(--surface)); }
+
+  .cell-title { font-weight: 700; font-size: .92rem; }
+  .cell-note { color: var(--muted); font-size: .85rem; margin-top: .1rem; }
+
+  .chip {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .72rem;
+    padding: .05rem .5rem;
+    border-radius: 99px;
+    margin: .35rem .25rem 0 0;
+    white-space: nowrap;
+  }
+  .chip.pain  { background: var(--warn-soft); color: var(--warn); }
+  .chip.skill { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+  .chip.human { background: var(--accent); color: var(--paper); }
+  .chip.same  { background: var(--ai); color: var(--muted); }
+
+  @media (max-width: 680px) {
+    .cmp-head { display: none; }
+    .stage { grid-template-columns: 1fr; }
+    .before { border-right: none; border-bottom: 1px dashed var(--line); }
+    .stage-name { padding-bottom: 0 !important; border-bottom: none; font-weight: 700; }
+    .before::before { content: "従来"; display: block; font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .12em; color: var(--muted); }
+    .after::before  { content: "導入後"; display: block; font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .12em; color: var(--accent-ink); }
+  }
+
+  /* ---- 正直な収支 ---- */
+  .balance { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
+  .bcard { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; }
+  .bcard h3 { margin: 0 0 .4rem; font-size: .95rem; }
+  .bcard ul { margin: 0; padding-left: 1.15em; font-size: .87rem; color: var(--muted); }
+  .bcard li { margin-bottom: .3em; }
+  .bcard.cost h3 { color: var(--warn); }
+  .bcard.gain h3 { color: var(--accent-ink); }
+  @media (max-width: 680px) { .balance { grid-template-columns: 1fr; } }
+
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .82rem; color: var(--muted); }
+  footer a { color: var(--accent-ink); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Before / After — Agent-First Development</p>
+    <h1>理解コストの引っ越し</h1>
+    <p class="lede">エージェント前提開発基準(v0.5)+スキル4本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
+  </header>
+
+  <figure>
+    <svg viewBox="0 0 860 260" role="img" aria-label="従来は理解コストがレビューに一括で届くが、導入後は先払い・減らす・計上の三箇所に分散される">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+      <g fill="none" stroke="currentColor" stroke-width="1.4" font-family="'Zen Kaku Gothic New',sans-serif">
+        <!-- 従来 -->
+        <text x="16" y="30" fill="currentColor" stroke="none" font-size="13" font-weight="700">従来</text>
+        <rect x="90"  y="44" width="150" height="46" rx="8"/>
+        <text x="165" y="72" fill="currentColor" stroke="none" font-size="13" text-anchor="middle">実装(AIに委譲)</text>
+        <line x1="240" y1="67" x2="330" y2="67" marker-end="url(#arr)"/>
+        <rect x="334" y="30" width="240" height="74" rx="8" stroke="var(--warn)" stroke-width="2.5"/>
+        <text x="454" y="60" fill="var(--warn)" stroke="none" font-size="13" font-weight="700" text-anchor="middle">レビュー</text>
+        <text x="454" y="82" fill="var(--warn)" stroke="none" font-size="11.5" text-anchor="middle">理解コストの請求が全部ここに届く</text>
+        <line x1="574" y1="67" x2="660" y2="67" marker-end="url(#arr)"/>
+        <rect x="664" y="44" width="120" height="46" rx="8"/>
+        <text x="724" y="72" fill="currentColor" stroke="none" font-size="13" text-anchor="middle">マージ(不安)</text>
+
+        <!-- 区切り -->
+        <line x1="16" y1="128" x2="844" y2="128" stroke-dasharray="3 5" opacity="0.5"/>
+
+        <!-- 導入後 -->
+        <text x="16" y="158" fill="currentColor" stroke="none" font-size="13" font-weight="700">導入後</text>
+        <rect x="90" y="172" width="130" height="46" rx="8" stroke="var(--accent)"/>
+        <text x="155" y="192" fill="var(--accent)" stroke="none" font-size="12.5" font-weight="700" text-anchor="middle">設計メモ</text>
+        <text x="155" y="208" fill="var(--accent)" stroke="none" font-size="11" text-anchor="middle">先払い</text>
+        <line x1="220" y1="195" x2="252" y2="195" marker-end="url(#arr)"/>
+        <rect x="256" y="172" width="130" height="46" rx="8"/>
+        <text x="321" y="200" fill="currentColor" stroke="none" font-size="13" text-anchor="middle">実装(委譲)</text>
+        <line x1="386" y1="195" x2="418" y2="195" marker-end="url(#arr)"/>
+        <rect x="422" y="172" width="160" height="46" rx="8" stroke="var(--accent)"/>
+        <text x="502" y="192" fill="var(--accent)" stroke="none" font-size="12.5" font-weight="700" text-anchor="middle">PRガイド+一次レビュー</text>
+        <text x="502" y="208" fill="var(--accent)" stroke="none" font-size="11" text-anchor="middle">減らす(隔離と濃淡)</text>
+        <line x1="582" y1="195" x2="614" y2="195" marker-end="url(#arr)"/>
+        <rect x="618" y="172" width="130" height="46" rx="8"/>
+        <text x="683" y="192" fill="currentColor" stroke="none" font-size="12.5" text-anchor="middle">レビュー(濃淡)</text>
+        <text x="683" y="208" fill="currentColor" stroke="none" font-size="11" text-anchor="middle">計上済みの作業</text>
+        <line x1="748" y1="195" x2="780" y2="195" marker-end="url(#arr)"/>
+        <rect x="784" y="172" width="60" height="46" rx="8"/>
+        <text x="814" y="200" fill="currentColor" stroke="none" font-size="12.5" text-anchor="middle">マージ</text>
+      </g>
+    </svg>
+    <figcaption>図: 実装が理解の時間を兼ねなくなった結果、従来は理解コストがレビューに一括で届く。導入後は「先払い(設計メモ)・減らす(隔離と濃淡)・計上する(見積りに含める)」の三箇所に分散される。</figcaption>
+  </figure>
+
+  <h2>段階別の変化</h2>
+  <p class="sub">左が現在、右が導入後。<span class="chip pain">▲ 痛点</span> <span class="chip skill">/skill</span>=スキルが下書き・機械検査 <span class="chip human">人間</span>=空欄として残る判断(Human-in-the-Loop) <span class="chip same">変更なし</span></p>
+
+  <div class="cmp">
+    <div class="cmp-head"><div>段階</div><div>従来</div><div class="after-h">導入後</div></div>
+
+    <div class="stage">
+      <div class="stage-name">着手</div>
+      <div class="before">
+        <div class="cell-title">チケットを読んで、すぐAIに投げる</div>
+        <div class="cell-note">方針は頭の中。チームに共有されない</div>
+        <span class="chip pain">▲ 文脈が個人に閉じる</span>
+      </div>
+      <div class="after">
+        <div class="cell-title">10行の方針メモを流し、異論を確認(10〜15分)</div>
+        <div class="cell-note">文脈の先払い。レビューの席で初めて文脈を獲得する最悪の形を防ぐ</div>
+        <span class="chip skill">/design-memo</span><span class="chip human">合意</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-name">実装</div>
+      <div class="before">
+        <div class="cell-title">AIに委譲</div>
+      </div>
+      <div class="after">
+        <div class="cell-title">AIに委譲</div>
+        <div class="cell-note">ここは何も変わらない。委譲をやめる基準ではない</div>
+        <span class="chip same">変更なし</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-name">テスト</div>
+      <div class="before">
+        <div class="cell-title">実装と同じセッションがテストも書く</div>
+        <div class="cell-note">実装に合わせたテストが通るだけ</div>
+        <span class="chip pain">▲ 同語反復(検証になっていない)</span>
+      </div>
+      <div class="after">
+        <div class="cell-title">不可逆系のみ、実装を見せない別セッションが仕様から生成</div>
+        <div class="cell-note">落ちたテスト=仕様が2通りに読めた証拠。裁定して仕様に書き戻す</div>
+        <span class="chip skill">/gen-tests</span><span class="chip human">裁定</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-name">PR作成</div>
+      <div class="before">
+        <div class="cell-title">説明が薄い、またはAIの冗長な長文</div>
+        <span class="chip pain">▲ レビュアーが文脈ゼロから読む</span>
+      </div>
+      <div class="after">
+        <div class="cell-title">機械記入欄は下書き、レビューの濃淡(行/構造/契約)を提案</div>
+        <div class="cell-note">「一番怪しい箇所」「捨てた選択肢」はAIが埋めない。著者の理解度テストを兼ねる</div>
+        <span class="chip skill">/pr-guide</span><span class="chip human">怪しい箇所の名指し</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-name">レビュー</div>
+      <div class="before">
+        <div class="cell-title">全行を同じ濃度で読む(または感覚で流す)</div>
+        <div class="cell-note">負担が見積りに存在しない</div>
+        <span class="chip pain">▲ 負担が計上されない</span><span class="chip pain">▲ 読む深さが属人的</span>
+      </div>
+      <div class="after">
+        <div class="cell-title">機械検査はAIが先に潰し、人間は指定された濃淡で読む</div>
+        <div class="cell-note">人間の対象は設計判断・契約の妥当性・行レベル箇所のみ。レビューは見積りに計上された作業になる</div>
+        <span class="chip skill">/first-review</span><span class="chip human">設計と契約の判断</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-name">マージ</div>
+      <div class="before">
+        <div class="cell-title">「テスト通ってるからヨシ」</div>
+        <span class="chip pain">▲ 基準がなく、不安か過信の二択</span>
+      </div>
+      <div class="after">
+        <div class="cell-title">基準:障害時に「どの箱が壊れたか」言えるか</div>
+        <div class="cell-note">全行トレースではなく地図レベル。マージ=一次対応責任の宣言</div>
+        <span class="chip human">決断(責任)</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-name">障害対応</div>
+      <div class="before">
+        <div class="cell-title">エージェントに聞くしかない</div>
+        <div class="cell-note">何を聞けばいいかも分からない。原因究明チャットが終わるまで何もできない</div>
+        <span class="chip pain">▲ 理解の単一障害点</span>
+      </div>
+      <div class="after">
+        <div class="cell-title">地図で壊れた箱を特定 → 必要な箇所だけAIと降りる</div>
+        <div class="cell-note">緩和と修正を分離できる。incidents.mdに1行記録し、判明したことを地図へ書き戻す</div>
+        <span class="chip human">仮説と切り分け</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>正直な収支</h2>
+  <p class="sub">導入はタダではない。増える手間を隠さずに置く。</p>
+  <div class="balance">
+    <div class="bcard cost">
+      <h3>増える手間</h3>
+      <ul>
+        <li>設計メモ 10〜15分/チケット</li>
+        <li>PRの空欄2つを自分で書く</li>
+        <li>障害記録 1行/件</li>
+        <li>目安: チケットあたり +20分前後</li>
+      </ul>
+    </div>
+    <div class="bcard gain">
+      <h3>減るもの</h3>
+      <ul>
+        <li>文脈ゼロからのレビュー読解</li>
+        <li>全行精読(濃淡の指定で置換)</li>
+        <li>テストの同語反復</li>
+        <li>マージ時の根拠のない不安</li>
+        <li>障害時の「聞くしかない」状態</li>
+      </ul>
+    </div>
+    <div class="bcard">
+      <h3>変わらないもの</h3>
+      <ul>
+        <li>実装をAIに委譲すること</li>
+        <li>判断と責任が人間にあること(空欄として見える形になるだけ)</li>
+        <li>守られない項目は削る、という改訂前提</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.5)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
+  </footer>
+</div>
+
+</body>
+</html>
