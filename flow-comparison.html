@@ -73,32 +73,36 @@
   h2 { font-size: 1.25rem; font-weight: 700; margin: 3rem 0 .35rem; }
   .sub { color: var(--muted); font-size: .88rem; margin: 0 0 1.25rem; }
 
-  /* ---- 理解コストのプロフィール図 ---- */
-  .cf { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.35rem 1.15rem 1rem; }
-  .cf-scroll { overflow-x: auto; }
-  .cf-grid { display: grid; grid-template-columns: 4.8rem repeat(5, minmax(4.6rem, 1fr)); gap: 0 .5rem; align-items: end; }
-  .cf-rowlabel {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: .74rem; letter-spacing: .1em; color: var(--muted);
-    padding-bottom: .35rem; align-self: end;
+  /* ---- 理解コストの配分図 ---- */
+  .pf { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.3rem 1.15rem 1.1rem; }
+  .pf-legend { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; list-style: none; margin: 0 0 1.15rem; padding: 0; font-size: .78rem; color: var(--muted); }
+  .pf-legend li { display: flex; align-items: center; gap: .4rem; }
+  .pf-key { width: 1.5rem; height: .62rem; border-radius: 2px; flex: none; }
+  .pf-key.in { background: var(--accent); }
+  .pf-key.out { background: repeating-linear-gradient(-45deg, var(--warn) 0 3px, transparent 3px 6px), var(--warn-soft); border: 1px solid var(--warn); }
+
+  .pf-row { display: grid; grid-template-columns: 5.6rem 1fr; gap: 0 .9rem; padding: .5rem 0; border-top: 1px solid var(--line); }
+  .pf-row:first-of-type { border-top: none; }
+  .pf-row.is-total { border-top: 2px solid var(--line); margin-top: .35rem; padding-top: .7rem; }
+  .pf-stage { font-family: "IBM Plex Mono", monospace; font-size: .74rem; color: var(--muted); padding-top: .15rem; }
+  .pf-row.is-total .pf-stage { color: var(--ink); font-weight: 700; }
+  .pf-line { display: flex; align-items: center; gap: .55rem; margin: .18rem 0; }
+  .pf-tag { font-family: "IBM Plex Mono", monospace; font-size: .66rem; letter-spacing: .06em; color: var(--muted); width: 3.1rem; flex: none; text-align: right; }
+  .pf-tag.is-after { color: var(--accent-ink); }
+  .pf-track { flex: 1 1 auto; display: flex; height: .72rem; background: var(--ai); border-radius: 3px; overflow: hidden; }
+  .pf-row.is-total .pf-track { height: 1.05rem; }
+  .pf-track i { display: block; height: 100%; }
+  .pf-track i.in { background: var(--accent); }
+  .pf-track i.out { background: repeating-linear-gradient(-45deg, var(--warn) 0 3px, transparent 3px 6px), var(--warn-soft); }
+  .pf-zero { font-size: .7rem; color: var(--muted); }
+
+  .pf-total { font-size: .8rem; color: var(--muted); margin: 1.1rem 0 0; padding-top: .85rem; border-top: 1px dashed var(--line); }
+  .pf-total strong { color: var(--ink); font-weight: 700; }
+  .pf-caveat { font-size: .75rem; color: var(--muted); margin: .5rem 0 0; }
+  @media (max-width: 560px) {
+    .pf-row { grid-template-columns: 1fr; gap: .1rem; }
+    .pf-stage { padding-top: 0; }
   }
-  .cf-rowlabel.is-after { color: var(--accent-ink); font-weight: 500; }
-  .cf-cell { display: flex; flex-direction: column; justify-content: flex-end; min-height: 96px; }
-  .cf-bar { border-radius: 5px 5px 0 0; }
-  .cf-bar.warn { background: var(--warn); }
-  .cf-bar.acc { background: var(--accent); }
-  .cf-bar.zero { height: 3px; border-radius: 2px; background: var(--line); }
-  .h-xl { height: 78px; } .h-m { height: 40px; } .h-s { height: 21px; }
-  .cf-tag { font-size: .7rem; line-height: 1.35; color: var(--muted); text-align: center; margin-top: .35rem; min-height: 2.7em; }
-  .cf-tag strong { display: block; color: var(--ink); font-weight: 500; }
-  .cf-stages { border-top: 1px solid var(--line); margin-top: .1rem; padding-top: .45rem; }
-  .cf-stage {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: .72rem; color: var(--muted); text-align: center;
-  }
-  .cf-total { font-size: .8rem; color: var(--muted); margin: 1rem 0 0; padding-top: .8rem; border-top: 1px dashed var(--line); }
-  .cf-total strong { color: var(--ink); font-weight: 700; }
-  @media (max-width: 680px) { .cf-grid { min-width: 31rem; } }
 
   /* ---- 凡例 ---- */
   .legend { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; margin: 0 0 1.25rem; padding: 0; list-style: none; font-size: .82rem; color: var(--muted); }
@@ -189,38 +193,75 @@
     <p class="lede">エージェント前提開発基準(v0.7)+スキル5本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
   </header>
 
-  <figure class="cf">
-    <div class="cf-scroll">
-      <div class="cf-grid" role="img" aria-label="従来は理解コストがレビューとマージに集中するが、導入後は着手・PR作成・レビュー・マージに分散する。総量はほぼ変わらない。">
-        <div class="cf-rowlabel">従来</div>
-        <div class="cf-cell"><div class="cf-bar zero"></div><div class="cf-tag"></div></div>
-        <div class="cf-cell"><div class="cf-bar zero"></div><div class="cf-tag"></div></div>
-        <div class="cf-cell"><div class="cf-bar zero"></div><div class="cf-tag"></div></div>
-        <div class="cf-cell"><div class="cf-bar warn h-xl"></div><div class="cf-tag"><strong>請求が全部ここ</strong>文脈ゼロから全行</div></div>
-        <div class="cf-cell"><div class="cf-bar warn h-m"></div><div class="cf-tag"><strong>不安か過信</strong>判断の基準がない</div></div>
-
-        <div class="cf-rowlabel is-after">導入後</div>
-        <div class="cf-cell"><div class="cf-bar acc h-m"></div><div class="cf-tag"><strong>先払い</strong>設計メモ 10〜15分</div></div>
-        <div class="cf-cell"><div class="cf-bar zero"></div><div class="cf-tag">委譲のまま</div></div>
-        <div class="cf-cell"><div class="cf-bar acc h-s"></div><div class="cf-tag"><strong>減らす</strong>濃淡の指定</div></div>
-        <div class="cf-cell"><div class="cf-bar acc h-m"></div><div class="cf-tag"><strong>計上済み</strong>指定された濃淡で</div></div>
-        <div class="cf-cell"><div class="cf-bar acc h-s"></div><div class="cf-tag"><strong>確認</strong>地図で追跡できるか</div></div>
-
-        <div class="cf-stages"></div>
-        <div class="cf-stages cf-stage">着手</div>
-        <div class="cf-stages cf-stage">実装</div>
-        <div class="cf-stages cf-stage">PR作成</div>
-        <div class="cf-stages cf-stage">レビュー</div>
-        <div class="cf-stages cf-stage">マージ</div>
+  <figure class="pf">
+    <ul class="pf-legend">
+      <li><span class="pf-key in"></span>見積りに入っている作業</li>
+      <li><span class="pf-key out"></span>見積り外の不意打ち</li>
+    </ul>
+      <div class="pf-row">
+        <div class="pf-stage">着手</div>
+        <div>
+          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"></div><span class="pf-zero">ここでは払わない</span></div>
+          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:16%"></i></div></div>
+        </div>
       </div>
-    </div>
-    <p class="cf-total">棒の高さ=そこで人間が払う理解コスト。<strong>総量は減っていない。</strong>実装が理解の時間を兼ねなくなった分の請求書は消えず、従来はレビューとマージに集中して届く。導入後はそれを<strong>先払い(設計メモ)・減らす(隔離と濃淡)・計上する(見積りに入れる)</strong>の三つに割り直しただけである。速くなる基準ではなく、払う場所を選べるようにする基準。</p>
+      <div class="pf-row">
+        <div class="pf-stage">実装</div>
+        <div>
+          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"></div><span class="pf-zero">AIに委譲</span></div>
+          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"></div><span class="pf-zero">AIに委譲(変更なし)</span></div>
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-stage">PR作成</div>
+        <div>
+          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="in" style="width:6%"></i></div></div>
+          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:12%"></i></div></div>
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-stage">レビュー</div>
+        <div>
+          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="out" style="width:38%"></i></div></div>
+          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:28%"></i></div></div>
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-stage">マージ</div>
+        <div>
+          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="out" style="width:12%"></i></div></div>
+          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:8%"></i></div></div>
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-stage">障害対応</div>
+        <div>
+          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="out" style="width:44%"></i></div></div>
+          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:16%"></i><i class="out" style="width:8%"></i></div></div>
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-stage">定常運用</div>
+        <div>
+          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"></div><span class="pf-zero">この運用が無い</span></div>
+          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:12%"></i></div></div>
+        </div>
+      </div>
+      <div class="pf-row is-total">
+        <div class="pf-stage">合計</div>
+        <div>
+          <div class="pf-line"><span class="pf-tag">従来</span><div class="pf-track"><i class="in" style="width:6%"></i><i class="out" style="width:94%"></i></div></div>
+          <div class="pf-line"><span class="pf-tag is-after">導入後</span><div class="pf-track"><i class="in" style="width:92%"></i><i class="out" style="width:8%"></i></div></div>
+        </div>
+      </div>
+    <p class="pf-total">横幅=そこで人間が払う理解コスト。<strong>合計を同じ長さにしてあるのは、減ると主張できる実測がないからである。</strong>短期ではむしろ少し増える(下の「正直な収支」:チケットあたり +20分前後 + 定常運用分)。この基準が変えるのは総量ではなく、<strong>いつ払うか</strong>と、<strong>それが見積りに入っているか</strong>。従来は請求のほぼ全部が斜線——レビューの文脈ゼロ読解・根拠のないマージ・障害時の手探り——として不意に届く。導入後は同じ量が、着手の設計メモと濃淡を指定したレビューという<strong>計画された作業</strong>に置き換わる。</p>
+    <p class="pf-caveat">※ 実測値ではなく、この基準が狙う配分の模式図。総量がどう動くかは各チームが実測する項目(レビュー時間・障害対応時間・切り分け成功率 → 基準§7)。「定常運用」は地図の維持・裁定・訓練にかかる時間で、基準§12がこれ自体の計上を要求している。</p>
   </figure>
 
   <details class="terms">
     <summary>この図で使う言葉(5つ)</summary>
     <dl>
-      <dt>契約</dt><dd>呼ぶ側と呼ばれる側の取り決め。「この入力を渡せば、この出力が返る。失敗するときはこう失敗する」</dd>
+      <dt>契約</dt><dd>呼び出しの約束を書き出したもの。「この入力を渡せば、この出力が返る。失敗するときはこう失敗する(そのとき DB には何も書かない)」——この3行が契約で、バグとはどちらかがこの約束を破ること</dd>
       <dt>濃淡</dt><dd>理解の深さを3段階で指定すること。契約理解(一文で言える)/構造理解(データの流れを説明できる)/行レベル理解(一行ずつ説明できる)</dd>
       <dt>不可逆系</dt><dd>やり直しが効かないもの。DBスキーマ変更・データ移行・課金・外部送信・削除。ここは行レベル理解が必須</dd>
       <dt>地図</dt><dd>何がどこに繋がっているか・契約・壊してはいけない条件・危険箇所を、判断に使える短さでまとめたもの</dd>
