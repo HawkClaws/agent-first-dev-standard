@@ -37,7 +37,7 @@ PR作成
 
 ## 導入
 
-SKILL.md形式は [Agent Skills Open Standard](https://agentskills.io) としてClaude Code・Codex CLI・Cursor等の多数のエージェントに採用されている。**中身の書き換えは不要で、コピー先だけが違う。** pr-guideが参照するPRテンプレートは `pr-guide/assets/` に同梱してあり、ディレクトリごとコピーすれば動く(正本は [templates/pr-template.md](../templates/pr-template.md)。編集時は両方を同期すること)。gen-testsのツール制限付きサブエージェント定義は SKILL.md 内の例を `.claude/agents/` に置く。
+SKILL.md形式は [Agent Skills Open Standard](https://agentskills.io) としてClaude Code・Codex CLI・Cursor等の多数のエージェントに採用されている。**中身の書き換えは不要で、コピー先だけが違う。** pr-guideが参照するPRテンプレートは `pr-guide/assets/` に同梱してあり、ディレクトリごとコピーすれば動く(**このリポジトリでもこれが正本**。以前はリポジトリ直下にも複製を置いて「編集時は両方を同期すること」としていたが、手動同期は一度破れたので複製をやめた)。gen-testsのツール制限付きサブエージェント定義は SKILL.md 内の例を `.claude/agents/` に置く。
 
 ```bash
 # Claude Code
