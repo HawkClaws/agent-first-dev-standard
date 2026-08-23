@@ -266,9 +266,9 @@
         <span class="chip pain">▲ 自作自演(検証になっていない)</span>
       </div>
       <div class="after">
-        <div class="cell-title">構造理解以上(不可逆系は必須)、実装を見せない別セッションが仕様から生成</div>
-        <div class="cell-note">落ちたテスト=仕様が2通りに読めた証拠。裁定して仕様に書き戻す</div>
-        <span class="chip skill">/gen-tests</span><span class="chip human">裁定</span>
+        <div class="cell-title">構造理解以上(不可逆系は必須)、実装を経由していない解釈と突き合わせる(独立照合)</div>
+        <div class="cell-note">既定は人間版——実装前仕様だけを読んで期待値を先に書き出す。重いときは実装を見せない別セッションが生成(自動版)。食い違い=仕様が2通りに読めた証拠。裁定して仕様に書き戻す</div>
+        <span class="chip skill">/gen-tests</span><span class="chip human">期待値の書き出し</span><span class="chip human">裁定</span>
       </div>
     </div>
 
@@ -336,7 +336,7 @@
         <li>設計メモ 10〜15分/チケット</li>
         <li>PRの空欄2つを自分で書く</li>
         <li>障害時の地図への書き戻し 数分/件</li>
-        <li>独立テストの裁定・訓練・地図維持(これらも見積りに計上する)</li>
+        <li>独立照合(期待値の書き出し・裁定)・訓練・地図維持(これらも見積りに計上する)</li>
         <li>目安: チケットあたり +20分前後 + 定常運用分</li>
       </ul>
     </div>
