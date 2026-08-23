@@ -282,7 +282,7 @@
       <div class="after">
         <div class="cell-title">実装と同じセッションのテストは回帰検知用と割り切り、検証は独立照合に出す</div>
         <div class="cell-note">独立照合の<strong>既定は人間版で、実行はレビュー段</strong>(書き手は実装方針を書いていない人)。この段でやるのは<strong>自動版</strong>だけ——契約数が多い等で人間の先読みが回らないときに、実装コードを見せないツール制限セッションが仕様からテストを生成する</div>
-        <span class="chip skill">/gen-tests</span><span class="chip same">回帰検知用テストは従来どおり</span>
+        <span class="chip skill">/crosscheck</span><span class="chip same">回帰検知用テストは従来どおり</span>
       </div>
     </div>
 
@@ -309,7 +309,7 @@
       <div class="after">
         <div class="cell-title">機械検査はAIが先に潰し、人間は指定されたレビュー指定で読む</div>
         <div class="cell-note">人間の対象は設計判断・契約の妥当性・構造理解対象のデータフロー・行レベル箇所。レビューは見積りに計上された作業になる。<strong>実装を開く前に、実装前仕様だけを読んで期待値を書き出す</strong>(独立照合の人間版)——書き手は実装方針を書いていない人。著者が書くと自己照合になる。食い違い=仕様が2通りに読めた証拠。裁定して仕様に書き戻す</div>
-        <span class="chip skill">/first-review</span><span class="chip skill">/gen-tests</span><span class="chip human">期待値の書き出し</span><span class="chip human">裁定</span><span class="chip human">設計と契約の判断</span>
+        <span class="chip skill">/first-review</span><span class="chip skill">/crosscheck</span><span class="chip human">期待値の書き出し</span><span class="chip human">裁定</span><span class="chip human">設計と契約の判断</span>
       </div>
     </div>
 

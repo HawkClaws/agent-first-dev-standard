@@ -13,7 +13,7 @@
 | | |
 |---|---|
 | [**standard.md**](standard.md) | 基準本文。これが規範 |
-| [**skills/**](skills/) | 基準を日常フローとして実行するスキル5本(design-memo / gen-tests / pr-guide / first-review / update-map) |
+| [**skills/**](skills/) | 基準を日常フローとして実行するスキル5本(design-memo / crosscheck / pr-guide / first-review / update-map) |
 | [flow-comparison](https://hawkclaws.github.io/agent-first-dev-standard/flow-comparison.html) | 導入前後のフロー比較図(GitHub Pages) |
 | [skills/pr-guide/assets/pr-template.md](skills/pr-guide/assets/pr-template.md) | PRテンプレート(pr-guide スキルに同梱。正本はこの1枚) |
 | [CHANGELOG.md](CHANGELOG.md) | 変更履歴 |

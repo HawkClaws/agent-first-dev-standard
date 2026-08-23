@@ -14,7 +14,7 @@
                       契約を変えるなら、地図Level 1の契約記述もここで下書きして一緒に承認を得る
                       (独立照合の材料になる。前倒しするのは下書きの時期だけ)
 実装・テスト(エージェントに委譲)
-  └─ /gen-tests     … 独立照合の**自動版**のみ(ツール制限セッションが仕様からテストを生成)
+  └─ /crosscheck     … 独立照合の**自動版**のみ(ツール制限セッションが仕様からテストを生成)
                       重いときだけ。既定は下のレビュー段の人間版
 PR作成
   └─ /pr-guide      … レビューガイドの機械記入欄を下書き。判断欄は空欄で返す(§9)
@@ -22,7 +22,7 @@ PR作成
                       (マージ後に回すと、マージ時点で追跡可能性を確認できず§3が空文になる)
   └─ /first-review  … AI一次レビュー。人間の見るべき箇所を絞り込む(§7)
 人間レビュー
-  └─ /gen-tests     … 独立照合の**人間版(既定)**。構造理解以上(不可逆系は必須、§4)
+  └─ /crosscheck     … 独立照合の**人間版(既定)**。構造理解以上(不可逆系は必須、§4)
                       仕様だけ提示 → 期待値を書くのは**実装方針を書いていない人**
                       (レビュアー。不可逆系ならドメインオーナー)。著者が書くと自己照合になる
 マージ(人間の決断)
@@ -44,14 +44,14 @@ PR作成
 
 ## 導入
 
-SKILL.md形式は [Agent Skills Open Standard](https://agentskills.io) としてClaude Code・Codex CLI・Cursor等の多数のエージェントに採用されている。**中身の書き換えは不要で、コピー先だけが違う。** pr-guideが参照するPRテンプレートは `pr-guide/assets/` に同梱してあり、ディレクトリごとコピーすれば動く(**このリポジトリでもこれが正本**。以前はリポジトリ直下にも複製を置いて「編集時は両方を同期すること」としていたが、手動同期は一度破れたので複製をやめた)。gen-testsのツール制限付きサブエージェント定義は SKILL.md 内の例を `.claude/agents/` に置く。
+SKILL.md形式は [Agent Skills Open Standard](https://agentskills.io) としてClaude Code・Codex CLI・Cursor等の多数のエージェントに採用されている。**中身の書き換えは不要で、コピー先だけが違う。** pr-guideが参照するPRテンプレートは `pr-guide/assets/` に同梱してあり、ディレクトリごとコピーすれば動く(**このリポジトリでもこれが正本**。以前はリポジトリ直下にも複製を置いて「編集時は両方を同期すること」としていたが、手動同期は一度破れたので複製をやめた)。crosscheck のツール制限付きサブエージェント定義は SKILL.md 内の例を `.claude/agents/` に置く。
 
 ```bash
 # Claude Code
-cp -r skills/design-memo skills/gen-tests skills/pr-guide skills/first-review skills/update-map <your-repo>/.claude/skills/
+cp -r skills/design-memo skills/crosscheck skills/pr-guide skills/first-review skills/update-map <your-repo>/.claude/skills/
 
 # Codex CLI(.agents/skills/ を走査する。公式: https://developers.openai.com/codex/skills)
-cp -r skills/design-memo skills/gen-tests skills/pr-guide skills/first-review skills/update-map <your-repo>/.agents/skills/
+cp -r skills/design-memo skills/crosscheck skills/pr-guide skills/first-review skills/update-map <your-repo>/.agents/skills/
 ```
 
 上記以外のエージェントでも、各 `SKILL.md` の本文は製品非依存の手順書として書かれているため、カスタム指示・プロンプトとしてそのまま移植できる。
