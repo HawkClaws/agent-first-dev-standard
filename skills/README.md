@@ -2,7 +2,13 @@
 
 [基準本文](../standard.md)の運用部分を、コーディングエージェントのスキル(手順書)として実装したもの。基準は覚えて守るものではなく、`/design-memo` と打てば始まるものにする。
 
-## フロー
+## まず /flow
+
+スキルを1本ずつ手で呼ぶ運用は、忙しい日に最初に消える。**`/flow <TICKET-ID>` は、機械でできる工程を連続実行し、人間の判断が必要な項目で止まる。** 状態は `docs/flow/<TICKET-ID>.md` に持つので、人間が空欄を埋めてもう一度呼べば続きが走る。1チケットにつき**人間のゲートの数だけ**呼べばよい(下のフロー全部を手で呼ぶと15回以上、`/flow` なら最大8回)。
+
+`flow` 自身は規範を持たない。下の5本を基準の順序で呼び、状態と実測を記録するだけである。
+
+## フロー(/flow が進める順序)
 
 ```
 導入時(一度だけ)
@@ -48,10 +54,10 @@ SKILL.md形式は [Agent Skills Open Standard](https://agentskills.io) として
 
 ```bash
 # Claude Code
-cp -r skills/design-memo skills/crosscheck skills/pr-guide skills/first-review skills/update-map <your-repo>/.claude/skills/
+cp -r skills/flow skills/design-memo skills/crosscheck skills/pr-guide skills/first-review skills/update-map <your-repo>/.claude/skills/
 
 # Codex CLI(.agents/skills/ を走査する。公式: https://developers.openai.com/codex/skills)
-cp -r skills/design-memo skills/crosscheck skills/pr-guide skills/first-review skills/update-map <your-repo>/.agents/skills/
+cp -r skills/flow skills/design-memo skills/crosscheck skills/pr-guide skills/first-review skills/update-map <your-repo>/.agents/skills/
 ```
 
 上記以外のエージェントでも、各 `SKILL.md` の本文は製品非依存の手順書として書かれているため、カスタム指示・プロンプトとしてそのまま移植できる。

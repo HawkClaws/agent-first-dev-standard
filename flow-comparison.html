@@ -233,6 +233,20 @@
     <div class="cmp-head"><div>段階</div><div>従来</div><div class="after-h">導入後</div></div>
 
     <div class="stage">
+      <div class="stage-name">進め方</div>
+      <div class="before">
+        <div class="cell-title">工程という概念がない</div>
+        <div class="cell-note">やるかやらないかが、その日の余裕で決まる</div>
+        <span class="chip pain">▲ 忙しい日に最初に消える</span>
+      </div>
+      <div class="after">
+        <div class="cell-title">下の全段を <code>/flow &lt;チケットID&gt;</code> が進める</div>
+        <div class="cell-note">機械でできる工程(下書き・機械検査・突き合わせ・記録)を連続実行し、<strong>人間の判断が必要な項目で止まる</strong>。状態は <code>docs/flow/&lt;チケットID&gt;.md</code> のチェックリストに持つ——<strong>この👤付き項目の一覧が、そのチケットのHuman-in-the-Loopの定義そのもの</strong>。スキップは削除せず理由を残す(基準§12で項目を削る根拠になる)</div>
+        <span class="chip skill">/flow</span>
+      </div>
+    </div>
+
+    <div class="stage">
       <div class="stage-name">導入時<br><span style="font-weight:400;opacity:.7">(一度だけ)</span></div>
       <div class="before">
         <div class="cell-title">全体像を書いたものが無い</div>
