@@ -202,7 +202,7 @@
         <span class="in" style="width:92%">見積りに入った作業として払う</span>
         <span class="out" style="width:8%"></span>
       </div>
-      <p class="pf-where">払う場所 → <b>着手</b>(設計メモ 10〜15分+領域の初回は地図の検収) / <b>実装と並列</b>(期待値の書き出し) / <b>レビュー</b>(レビュー指定に従って読む+裁定) / <b>定常運用</b>(地図の維持・訓練・月イチ検査)</p>
+      <p class="pf-where">払う場所 → <b>着手</b>(設計メモ 10〜15分) / <b>実装と並列</b>(期待値の書き出し) / <b>PR作成</b>(領域の初回は地図の検収) / <b>レビュー</b>(レビュー指定に従って読む+裁定) / <b>定常運用</b>(地図の維持・訓練・月イチ検査)</p>
     </div>
 
     <p class="pf-total">横幅=人間が払う理解コストの総量。<strong>2本を同じ長さにしてあるのは、減ると主張できる実測がないからである。</strong>短期ではむしろ少し増える(下の「正直な収支」:チケットあたり +20分前後 + 定常運用分)。この基準が変えるのは総量ではなく、<strong>それが見積りに入っているか</strong>——斜線が色に反転すること、それだけが導入の効果である。</p>
@@ -251,8 +251,8 @@
       </div>
       <div class="after">
         <div class="cell-title">10行の方針メモを流し、異論を確認(10〜15分)</div>
-        <div class="cell-note"><strong>その領域に初めて触るチケットなら、まず理解の地図(Level 0〜3)の初版を生成し、ドメインオーナーが通読・修正して検収する</strong>(領域ごとに一度だけ。1領域200行以内。これが済むまでその領域のマージゲートの地図要件は発効しない)。<br>文脈の先払い。レビューの席で初めて文脈を獲得する最悪の形を防ぐ。契約を変えるなら設計メモの<strong>「契約」欄</strong>を埋めて承認する——これが<strong>独立照合</strong>(実装を経由していない解釈と実装を突き合わせること)の材料になる。<strong>既にある地図はここでは触らない</strong>(地図は現実の記述で、更新は実装後のPRの中)</div>
-        <span class="chip skill">/design-memo</span><span class="chip skill">/update-map</span><span class="chip human">合意</span><span class="chip human">地図の検収</span>
+        <div class="cell-note">文脈の先払い。レビューの席で初めて文脈を獲得する最悪の形を防ぐ。契約を変えるなら設計メモの<strong>「契約」欄</strong>を埋めて承認する——これが<strong>独立照合</strong>(実装を経由していない解釈と実装を突き合わせること)の材料になる。<strong>既にある地図はここでは触らない</strong>(地図は現実の記述で、更新は実装後のPRの中)</div>
+        <span class="chip skill">/design-memo</span><span class="chip human">合意</span>
       </div>
     </div>
 
@@ -290,8 +290,8 @@
       </div>
       <div class="after">
         <div class="cell-title">機械記入欄は下書き、レビュー指定(行/構造/契約)を提案</div>
-        <div class="cell-note">「一番怪しい箇所」「捨てた選択肢」はAIが埋めない。著者の理解度テストを兼ねる。契約・不変条件・危険領域を変えたPRは、地図の更新を<strong>このPRに同梱</strong>する(マージ後に回すとマージ時点で追跡可能性を確認できない)</div>
-        <span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">怪しい箇所の名指し</span>
+        <div class="cell-note">「一番怪しい箇所」「捨てた選択肢」はAIが埋めない。著者の理解度テストを兼ねる。<strong>地図に触るのはこの段だけ</strong>——契約・不変条件・危険領域を変えたPRは地図の更新を<strong>このPRに同梱</strong>する(マージ後に回すとマージ時点で追跡可能性を確認できない)。<strong>その領域に初めて触るPRなら、ここで地図の初版を生成してドメインオーナーが検収する</strong>(領域ごとに一度だけ。1領域200行以内)</div>
+        <span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">怪しい箇所の名指し</span><span class="chip human">領域の決定</span><span class="chip human">地図の検収</span>
       </div>
     </div>
 
