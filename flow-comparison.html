@@ -183,7 +183,7 @@
   <header>
     <p class="eyebrow">Before / After — Agent-First Development</p>
     <h1>理解コストの引っ越し</h1>
-    <p class="lede">エージェント前提開発基準(v0.8)+スキル5本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
+    <p class="lede">エージェント前提開発基準(v0.9)+スキル5本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
   </header>
 
   <figure class="pf">
@@ -280,8 +280,8 @@
       </div>
       <div class="after">
         <div class="cell-title">機械記入欄は下書き、レビューの濃淡(行/構造/契約)を提案</div>
-        <div class="cell-note">「一番怪しい箇所」「捨てた選択肢」はAIが埋めない。著者の理解度テストを兼ねる</div>
-        <span class="chip skill">/pr-guide</span><span class="chip human">怪しい箇所の名指し</span>
+        <div class="cell-note">「一番怪しい箇所」「捨てた選択肢」はAIが埋めない。著者の理解度テストを兼ねる。契約・不変条件・危険領域を変えたPRは、地図の更新を<strong>このPRに同梱</strong>する(マージ後に回すとマージ時点で追跡可能性を確認できない)</div>
+        <span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">怪しい箇所の名指し</span>
       </div>
     </div>
 
@@ -307,7 +307,7 @@
       </div>
       <div class="after">
         <div class="cell-title">基準:障害時に「どの箱が壊れたか」言えるか</div>
-        <div class="cell-note">全行の追跡ではなく地図レベル。マージ=地図で追跡できる状態の確認(一次対応はオンコールのロール)</div>
+        <div class="cell-note">全行の追跡ではなく地図レベル。マージ=地図で追跡できる状態の確認(一次対応はオンコールのロール)。<strong>前提として、地図の初版は導入時に生成・検収されている</strong>(未検収の間はこのゲートの地図要件は発効しない)</div>
         <span class="chip human">決断(責任)</span>
       </div>
     </div>
@@ -361,7 +361,7 @@
   </div>
 
   <footer>
-    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.8)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
+    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.9)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
   </footer>
 </div>
 
