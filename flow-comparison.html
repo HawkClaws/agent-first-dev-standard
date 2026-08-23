@@ -233,6 +233,20 @@
     <div class="cmp-head"><div>段階</div><div>従来</div><div class="after-h">導入後</div></div>
 
     <div class="stage">
+      <div class="stage-name">導入時<br><span style="font-weight:400;opacity:.7">(一度だけ)</span></div>
+      <div class="before">
+        <div class="cell-title">全体像を書いたものが無い</div>
+        <div class="cell-note">誰がどこまで分かっているかも分からない。障害の夜に頼れるものが個人の記憶しかない</div>
+        <span class="chip pain">▲ 理解が個人の頭にしか無い</span>
+      </div>
+      <div class="after">
+        <div class="cell-title">理解の地図(Level 0〜3)の初版を生成し、人間が通読・修正して検収</div>
+        <div class="cell-note">下書きはAI、所有は人間。無修正の受け入れは読まれていない疑い。全体で200行以内。<strong>これが済むまでマージゲートの地図要件は発効しない</strong>(明示した保留と、なし崩しの棚上げは別物)</div>
+        <span class="chip skill">/update-map</span><span class="chip human">通読と検収</span>
+      </div>
+    </div>
+
+    <div class="stage">
       <div class="stage-name">着手</div>
       <div class="before">
         <div class="cell-title">チケットを読んで、すぐAIに投げる</div>
@@ -241,8 +255,8 @@
       </div>
       <div class="after">
         <div class="cell-title">10行の方針メモを流し、異論を確認(10〜15分)</div>
-        <div class="cell-note">文脈の先払い。レビューの席で初めて文脈を獲得する最悪の形を防ぐ</div>
-        <span class="chip skill">/design-memo</span><span class="chip human">合意</span>
+        <div class="cell-note">文脈の先払い。レビューの席で初めて文脈を獲得する最悪の形を防ぐ。契約を変えるなら<strong>地図Level 1の契約記述もここで一緒に承認する</strong>——これが独立照合の材料になる(前倒しするのは下書きの時期だけ)</div>
+        <span class="chip skill">/design-memo</span><span class="chip skill">/update-map</span><span class="chip human">合意</span>
       </div>
     </div>
 
@@ -266,9 +280,9 @@
         <span class="chip pain">▲ 自作自演(検証になっていない)</span>
       </div>
       <div class="after">
-        <div class="cell-title">構造理解以上(不可逆系は必須)、実装を経由していない解釈と突き合わせる(独立照合)</div>
-        <div class="cell-note">既定は人間版——実装前仕様だけを読んで期待値を先に書き出す。<strong>書き手は実装方針を書いていない人</strong>(レビュアー。不可逆系ならドメインオーナー)なので、実行はレビュー段。著者が書くと自己照合になる。重いときは実装を見せない別セッションが生成(自動版)。食い違い=仕様が2通りに読めた証拠。裁定して仕様に書き戻す</div>
-        <span class="chip skill">/gen-tests</span><span class="chip human">期待値の書き出し</span><span class="chip human">裁定</span>
+        <div class="cell-title">実装と同じセッションのテストは回帰検知用と割り切り、検証は独立照合に出す</div>
+        <div class="cell-note">独立照合の<strong>既定は人間版で、実行はレビュー段</strong>(書き手は実装方針を書いていない人)。この段でやるのは<strong>自動版</strong>だけ——契約数が多い等で人間の先読みが回らないときに、実装コードを見せないツール制限セッションが仕様からテストを生成する</div>
+        <span class="chip skill">/gen-tests</span><span class="chip same">回帰検知用テストは従来どおり</span>
       </div>
     </div>
 
@@ -293,9 +307,9 @@
         <span class="chip pain">▲ 負担が計上されない</span><span class="chip pain">▲ 読む深さが属人的</span>
       </div>
       <div class="after">
-        <div class="cell-title">機械検査はAIが先に潰し、人間は指定された濃淡で読む</div>
-        <div class="cell-note">人間の対象は設計判断・契約の妥当性・構造理解対象のデータフロー・行レベル箇所。レビューは見積りに計上された作業になる</div>
-        <span class="chip skill">/first-review</span><span class="chip human">設計と契約の判断</span>
+        <div class="cell-title">機械検査はAIが先に潰し、人間は指定されたレビュー指定で読む</div>
+        <div class="cell-note">人間の対象は設計判断・契約の妥当性・構造理解対象のデータフロー・行レベル箇所。レビューは見積りに計上された作業になる。<strong>実装を開く前に、実装前仕様だけを読んで期待値を書き出す</strong>(独立照合の人間版)——書き手は実装方針を書いていない人。著者が書くと自己照合になる。食い違い=仕様が2通りに読めた証拠。裁定して仕様に書き戻す</div>
+        <span class="chip skill">/first-review</span><span class="chip skill">/gen-tests</span><span class="chip human">期待値の書き出し</span><span class="chip human">裁定</span><span class="chip human">設計と契約の判断</span>
       </div>
     </div>
 
