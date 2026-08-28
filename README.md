@@ -117,6 +117,8 @@ cp -r skills/* <your-repo>/.agents/skills/
 
 主要OSSプロジェクトのAI生成コードポリシーは、いずれも一律の扱いを定めている:[QEMU](https://www.qemu.org/docs/master/devel/code-provenance.html)(AI生成コンテンツを拒否)/ [Gentoo](https://wiki.gentoo.org/wiki/Project:Council/AI_policy)(全面禁止)/ [NetBSD](https://www.netbsd.org/developers/commit-guidelines.html)(汚染推定+コア承認)/ [Fedora](https://communityblog.fedoraproject.org/council-policy-proposal-policy-on-ai-assisted-contributions/)(許可+説明責任と開示。提案は2025年10月に[承認](https://lwn.net/Articles/1042947/))/ [curl](https://github.com/curl/curl/blob/master/docs/CONTRIBUTE.md)(通常品質基準+開示)。
 
+実務側の報告として、「全員が1行も手で書かない」チームの1年間([木村健一郎, 2026-08](https://speakerdeck.com/kenichirokimura/embedding-ai-driven-development-into-your-team))は、生成コードの説明責任を指示した人間に置く点・レビューを設計判断へ寄せる点・役割ごとにエージェントを分割する点で本基準と同じ形に収束している。同報告の「手で書く前に疑う順番」([§8](standard.md#s8))・「途中参加者の合流を検査に使う」([§11](standard.md#s11))・「手順書自体の肥大化」([§7](standard.md#s7))は本基準に取り込んだ。定量評価ではない。
+
 コードの性質に応じて**理解の深さを段階化**した公開基準は、これらにも政府系ガイドラインにも確認できていない。関連研究として、リスクに応じて監督形態を段階化する [Graduated Human Oversight(arXiv:2606.22484)](https://arxiv.org/pdf/2606.22484) がある(軸が異なる)。「無い」ことの証明はできないので、既存の類似基準をご存知であればissueで教えてほしい。
 
 ## Contributing
@@ -130,7 +132,7 @@ issue / PR 歓迎です。ただし、特定の組織・プロダクトが識別
 ### 帰属の書き方(例)
 
 - **社内ドキュメントに取り込む場合**
-  > 本ドキュメントは「エージェント前提開発基準」(HawkClaws, CC BY 4.0) v0.25 に準拠しています。
+  > 本ドキュメントは「エージェント前提開発基準」(HawkClaws, CC BY 4.0) v0.26 に準拠しています。
   > https://github.com/HawkClaws/agent-first-dev-standard
 
   版を明記すると、こちらの改訂への追従を意識的に判断できます(→ [このリポジトリの範囲](#このリポジトリの範囲))。
