@@ -183,7 +183,7 @@
   <header>
     <p class="eyebrow">Before / After — Agent-First Development</p>
     <h1>理解コストの引っ越し</h1>
-    <p class="lede">エージェント前提開発基準(v0.11)+スキル6本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
+    <p class="lede">エージェント前提開発基準(v0.25)+スキル6本を導入すると、開発フローの何が変わるか。変わるのは作業の速さではなく、<strong>理解コストが発生する場所</strong>と、<strong>人間の判断が置かれる場所</strong>。</p>
   </header>
 
   <figure class="pf">
@@ -210,12 +210,13 @@
   </figure>
 
   <details class="terms">
-    <summary>この図で使う言葉(5つ)</summary>
+    <summary>この図で使う言葉(6つ)</summary>
     <dl>
       <dt>契約</dt><dd>呼び出しの約束を書き出したもの。「この入力を渡せば、この出力が返る。失敗するときはこう失敗する(そのとき DB には何も書かない)」——この3行が契約で、バグとはどちらかがこの約束を破ること</dd>
       <dt>理解レベル</dt><dd>理解の深さの3段階。PRで範囲ごとに指定する(=レビュー指定)。契約理解(一文で言える)/構造理解(データの流れを説明できる)/行レベル理解(一行ずつ説明できる)</dd>
       <dt>不可逆系</dt><dd>やり直しが効かないもの。DBスキーマ変更・データ移行・課金・外部送信・削除。ここは行レベル理解が必須</dd>
       <dt>地図</dt><dd>何がどこに繋がっているか・契約・壊してはいけない条件・危険箇所を、判断に使える短さでまとめたもの</dd>
+      <dt>理解検査 / 独立照合</dt><dd>実装の出力を見る<strong>前</strong>に契約の期待値を書き出し、実装と突き合わせること。<strong>著者</strong>が書けば理解検査(標準)、<strong>実装方針を書いていない人</strong>が書けば独立照合(不可逆系で必須)</dd>
       <dt>裁定</dt><dd>独立照合で仕様の読みが2通りに割れたとき、どちらが意図だったかを人間が決めること</dd>
     </dl>
   </details>
@@ -251,7 +252,7 @@
       </div>
       <div class="after">
         <div class="cell-title">10行の方針メモを流し、異論を確認(10〜15分)</div>
-        <div class="cell-note">文脈の先払い。レビューの席で初めて文脈を獲得する最悪の形を防ぐ。契約を変えるなら設計メモの<strong>「契約」欄</strong>を埋めて承認する——これが<strong>独立照合</strong>(実装を経由していない解釈と実装を突き合わせること)の材料になる。<strong>既にある地図はここでは触らない</strong>(地図は現実の記述で、更新は実装後のPRの中)</div>
+        <div class="cell-note">文脈の先払い。レビューの席で初めて文脈を獲得する最悪の形を防ぐ。契約を変えるなら設計メモの<strong>「契約」欄</strong>を埋めて承認する——これが理解検査・独立照合の材料になる。<strong>既にある地図はここでは触らない</strong>(地図は現実の記述で、更新は実装後のPRの中)</div>
         <span class="chip skill">/design-memo</span><span class="chip human">合意</span>
       </div>
     </div>
@@ -276,9 +277,9 @@
         <span class="chip pain">▲ 自作自演(検証になっていない)</span>
       </div>
       <div class="after">
-        <div class="cell-title">実装と同じセッションのテストは回帰検知用と割り切り、検証は独立照合に出す</div>
-        <div class="cell-note">独立照合の<strong>既定は人間版で、実行はこの段——実装と並列</strong>。書き手は実装方針を書いていない人(レビュアー)。<strong>実装がまだ存在しない時点で期待値を書き終えるので、隔離が指示ではなく構成で保証される</strong>し、クリティカルパスにも乗らない(実測0分)。契約数が多い等で人間の先読みが回らないときだけ、実装コードを見せないツール制限セッションにテストを生成させる(自動版)</div>
-        <span class="chip skill">/crosscheck</span><span class="chip same">回帰検知用テストは従来どおり</span>
+        <div class="cell-title">実装と同じセッションのテストは回帰検知用と割り切り、期待値は実装を見る前に人間が書く</div>
+        <div class="cell-note"><strong>標準は理解検査</strong>——著者が、実装の出力を見る前に契約ごとの期待値(成功したら/失敗したら/前提)を自分の言葉で書く。書けない欄があること自体が検査結果。<strong>不可逆系は独立照合が必須</strong>——書き手は実装方針を書いていない人(レビュアー/ドメインオーナー)。どちらも<strong>実装と並列</strong>に書くので、隔離が指示ではなく構成で保証され、クリティカルパスにも乗らない(実測0分)。第二解釈者がいない・契約が多すぎるときだけ、実装コードを見せないツール制限セッションにテストを生成させる(自動版)</div>
+        <span class="chip skill">/crosscheck</span><span class="chip human">期待値の書き出し</span><span class="chip same">回帰検知用テストは従来どおり</span>
       </div>
     </div>
 
@@ -290,8 +291,8 @@
       </div>
       <div class="after">
         <div class="cell-title">機械記入欄は下書き、レビュー指定(行/構造/契約)を提案</div>
-        <div class="cell-note">「一番怪しい箇所」「捨てた選択肢」はAIが埋めない。著者の理解度テストを兼ねる。<strong>地図に触るのはこの段だけ</strong>——契約・不変条件・危険領域を変えたPRは地図の更新を<strong>このPRに同梱</strong>する(マージ後に回すとマージ時点で追跡可能性を確認できない)。<strong>その領域に初めて触るPRなら、ここで地図の初版を生成してドメインオーナーが検収する</strong>(領域ごとに一度だけ。1領域200行以内)</div>
-        <span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">怪しい箇所の名指し</span><span class="chip human">領域の決定</span><span class="chip human">地図の検収</span>
+        <div class="cell-note">「捨てた選択肢」はAIが生成しない(著者本人の発言の逐語転記のみ可、選別は著者)。「一番怪しい箇所」は実装側の申告と設計メモの懸念点を<strong>機械が転記</strong>し、著者は違うものを消すだけ。理解検査の突き合わせもここ——食い違いは「仕様が2通りに読めた」ものだけPRに載せ、「知らなかった」ものはコード・地図に反映する。計測・集計・エクスポート系なら<strong>実データを1本通して分布と集計を見る</strong>(出力との突き合わせ)。<strong>地図に触るのはこの段だけ</strong>——契約・不変条件・危険領域を変えたPRは地図の更新を<strong>このPRに同梱</strong>する(マージ後に回すとマージ時点で追跡可能性を確認できない)。<strong>その領域に初めて触るPRなら、ここで地図の初版を生成してドメインオーナーが検収する</strong>(領域ごとに一度だけ。1領域200行以内)</div>
+        <span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">捨てた選択肢の選別</span><span class="chip human">領域の決定</span><span class="chip human">地図の検収</span>
       </div>
     </div>
 
@@ -317,7 +318,7 @@
       </div>
       <div class="after">
         <div class="cell-title">基準:障害時に「どの箱が壊れたか」言えるか</div>
-        <div class="cell-note">全行の追跡ではなく地図レベル。マージ=地図で追跡できる状態の確認(一次対応はオンコールのロール)。<strong>前提として、触る領域の地図が検収済みであること</strong>(発効は領域ごと。未検収の領域については保留と明示する)。あわせて<strong>不可逆な副作用が「なし」以外なら独立照合が「未実施」でないこと</strong>を確認する</div>
+        <div class="cell-note">全行の追跡ではなく地図レベル。マージ=地図で追跡できる状態の確認(一次対応はオンコールのロール)。<strong>前提として、触る領域の地図が検収済みであること</strong>(発効は領域ごと。未検収の領域については保留と明示する)。あわせて<strong>不可逆な副作用が「なし」以外なら検査欄が「独立照合(人間版/自動版)」であること</strong>(理解検査では満たさない)、<strong>計測・集計系なら「出力との突き合わせ」が実施済みであること</strong>を確認する</div>
         <span class="chip human">決断(責任)</span>
       </div>
     </div>
@@ -344,9 +345,9 @@
       <h3>増える手間</h3>
       <ul>
         <li>設計メモ 10〜15分/チケット</li>
-        <li>PRの空欄2つを自分で書く</li>
+        <li>理解検査の期待値・捨てた選択肢を自分で書く(領域の初回は地図の検収も)</li>
         <li>障害時の地図への書き戻し 数分/件</li>
-        <li>独立照合(期待値の書き出し・裁定)・訓練・地図維持(これらも見積りに計上する)</li>
+        <li>独立照合(不可逆系のみ)・裁定・訓練・地図維持・月イチ検査(これらも見積りに計上する)</li>
         <li>目安: チケットあたり +20分前後 + 定常運用分</li>
       </ul>
     </div>
@@ -371,7 +372,7 @@
   </div>
 
   <footer>
-    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.11)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
+    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.25)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
   </footer>
 </div>
 
