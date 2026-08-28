@@ -1,6 +1,8 @@
-# エージェント前提開発基準(v0.26)
+# エージェント前提開発基準(v0.27)
 
 コーディングエージェント(Claude Code、Codex 等)に実装を任せる前提のプロジェクトで、理解・PR・マージ・レビューをどう運用するかを決める基準。中心にある問いは**どこまで理解してからPRを出し、どこまで理解してからマージするか**である。特定のエージェント製品には依存しない。
+
+**読み手はこの基準を採用するかを判断する人間である。** エージェントが日常的に読むのは [skills/](skills/) の手順書で、この文書は節アンカー(`#s4` 等)で必要な節だけ参照される。だから本文には規範だけを置き、出典・先行研究は末尾の[参考文献](#refs)に寄せてある——本文を丸ごとエージェントに読ませる場合に、根拠の記述が文脈を食わないようにするためである([§7](#s7)の手順書肥大化の測定項目はこの文書自身にも当てはまる)。
 
 ## この基準を3行で
 
@@ -51,7 +53,7 @@ AI以前は、実装している時間がそのまま**理解する時間を兼�
 
 理解負債(用語表)が行数で測れないことを、例で言い直しておく。再生成できる形にきちんと隔離された100万行は負債ではない。誰も意味を説明できないDBのデータ変換ロジック100行は巨大な負債である。
 
-> この考え方は英語圏で **comprehension debt** として先に論じられている([Jason Gorman, 2025](https://codemanship.wordpress.com/2025/09/30/comprehension-debt-the-ticking-time-bomb-of-llm-generated-code/) / [Addy Osmani, 2026](https://addyosmani.com/blog/comprehension-debt/))。近い概念として Storey の [Triple Debt Model](https://queue.acm.org/detail.cfm?id=3807966)(technical / cognitive / intent debt)がある。この文書の「理解負債」は、それらの整理と訳語である。
+「理解負債」は英語圏の comprehension debt の整理と訳語である([参考文献 R1](#refs))。
 
 <a id="s2"></a>
 ## 2. どこまで理解するか — 3段階
@@ -186,7 +188,7 @@ createUser(email, plan)
 
 不可逆系以外の構造理解対象に独立照合を足すのは引き続き推奨(第二解釈者がいれば)。
 
-> 自動版には学術的な先行研究がある。自然言語の仕様からLLMで差分テストを生成して実バグを見つけた [DiffSpec(arXiv:2410.04249)](https://arxiv.org/abs/2410.04249)、LLMでN版プログラミングを自動化した [Galápagos(arXiv:2408.09536)](https://arxiv.org/abs/2408.09536)。この節はその実務向けの簡易版にあたる。
+自動版は先行研究の実務向け簡易版にあたる([参考文献 R2](#refs))。
 
 ### それでも人間に残る仕事
 
@@ -380,6 +382,16 @@ AI生成コードを「ライブラリを使う感覚」で扱ってよい。た
 - (c) 再追加する条件の記録(例:分類比率が契約側に流れたら、障害で露呈したら)
 
 また削除できるのは運用項目だけである。**[§6](#s6)のオンコール原則・[§2](#s2)の行レベル対象・[§8](#s8)の責任割当は、削除ではなく改訂のみ。** これらは基準が存在する理由そのものである。
+
+---
+
+<a id="refs"></a>
+## 参考文献(規範ではない。本文の根拠と出自)
+
+- **R1 理解負債の出自**([§1](#s1))— comprehension debt: [Jason Gorman, 2025](https://codemanship.wordpress.com/2025/09/30/comprehension-debt-the-ticking-time-bomb-of-llm-generated-code/) / [Addy Osmani, 2026](https://addyosmani.com/blog/comprehension-debt/)。近い概念として Storey の [Triple Debt Model](https://queue.acm.org/detail.cfm?id=3807966)(technical / cognitive / intent debt)。
+- **R2 独立照合・自動版の先行研究**([§4](#s4))— 自然言語の仕様からLLMで差分テストを生成して実バグを見つけた [DiffSpec(arXiv:2410.04249)](https://arxiv.org/abs/2410.04249)、LLMでN版プログラミングを自動化した [Galápagos(arXiv:2408.09536)](https://arxiv.org/abs/2408.09536)。
+- **地図をリポジトリに置く先行例と反証**は [§11](#s11) 内に残している。運用の互換条件(隣接配置の可否・ADR調査への対策)が根拠と分離できないため。
+- OSSのAIポリシー・実務報告・関連研究の一覧は [README](README.md#関連する先行事例研究2026年8月調査) にある。
 
 ---
 

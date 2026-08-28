@@ -12,7 +12,7 @@
 
 | | |
 |---|---|
-| [**standard.md**](standard.md) | 基準本文。これが規範 |
+| [**standard.md**](standard.md) | 基準本文。これが規範。読み手は人間で、エージェントは skills/ から節アンカーで参照する。出典は末尾の参考文献に分離 |
 | [**skills/**](skills/) | 基準を日常フローとして実行するスキル6本(flow / design-memo / crosscheck / pr-guide / first-review / update-map)。`flow` は他の5本を順に呼ぶ進行係 |
 | [flow-comparison](https://hawkclaws.github.io/agent-first-dev-standard/flow-comparison.html) | 導入前後のフロー比較図(GitHub Pages) |
 | [skills/pr-guide/assets/pr-template.md](skills/pr-guide/assets/pr-template.md) | PRテンプレート(pr-guide スキルに同梱。正本はこの1枚) |
@@ -132,7 +132,7 @@ issue / PR 歓迎です。ただし、特定の組織・プロダクトが識別
 ### 帰属の書き方(例)
 
 - **社内ドキュメントに取り込む場合**
-  > 本ドキュメントは「エージェント前提開発基準」(HawkClaws, CC BY 4.0) v0.26 に準拠しています。
+  > 本ドキュメントは「エージェント前提開発基準」(HawkClaws, CC BY 4.0) v0.27 に準拠しています。
   > https://github.com/HawkClaws/agent-first-dev-standard
 
   版を明記すると、こちらの改訂への追従を意識的に判断できます(→ [このリポジトリの範囲](#このリポジトリの範囲))。
