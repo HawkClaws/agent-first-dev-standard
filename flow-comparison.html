@@ -223,7 +223,7 @@
     <p class="eyebrow">Before / After — Agent-First Development</p>
     <h1>不意打ちを、見積りに変える</h1>
     <p class="lede">AI以前、実装している時間はそのまま理解する時間を兼ねていた。エージェントが実装の時間をほぼ消したが、消えたのは実装の分だけで、<strong>理解の分の請求書は消えていない</strong>——それがレビューとマージの席に、一度にまとまって届くようになった。</p>
-    <p class="lede">エージェント前提開発基準(v0.35)+スキル6本が変えるのは、作業の速さではない。<strong>理解コストが届く場所</strong>と、<strong>人間の判断が置かれる場所</strong>である。</p>
+    <p class="lede">エージェント前提開発基準(v0.36)+スキル6本が変えるのは、作業の速さではない。<strong>理解コストが届く場所</strong>と、<strong>人間の判断が置かれる場所</strong>である。</p>
   </header>
 
   <figure class="pf">
@@ -310,7 +310,7 @@
       </div>
       <div class="after">
         <div class="cell-title">AIに委譲(ここは変えない)</div>
-        <div class="cell-note">委譲をやめる基準ではない。変わるのは報告の形だけ——完了報告に「迷った箇所・仕様が薄く補完した箇所」を残させる(後でPRの「一番怪しい箇所」欄に機械が転記する材料)</div>
+        <div class="cell-note">委譲をやめる基準ではない。変わるのは報告の形だけ——完了報告に「迷った箇所・仕様が薄く補完した箇所」を残させる(著者が完了確認で読む。残す価値のある事実は地図かコードコメントへ)</div>
         <span class="chip same">変更なし(委譲)</span>
       </div>
     </div>
@@ -346,7 +346,6 @@
         <div class="cell-title">機械記入欄は下書き、レビュー指定(行/構造/契約)を提案</div>
         <div class="cell-note">
           <ul>
-            <li>「一番怪しい箇所」は<b>機械が転記</b>する(実装側の申告+設計メモの懸念点)。著者は違うものを消すだけ</li>
             <li>「捨てた選択肢」はAIが生成しない(著者本人の発言の逐語転記のみ可、選別は著者)</li>
             <li>理解検査の突き合わせもここ——「仕様が2通りに読めた」ものだけPRに載せ、「知らなかった」ものはコード・地図に反映する</li>
             <li>計測・集計・エクスポート系なら<b>実データを1本通して分布と集計を見る</b>(出力との突き合わせ)</li>
@@ -473,7 +472,7 @@
   </div>
 
   <footer>
-    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.35)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
+    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.36)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
   </footer>
 </div>
 
