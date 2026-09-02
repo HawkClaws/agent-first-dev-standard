@@ -223,7 +223,7 @@
     <p class="eyebrow">Before / After — Agent-First Development</p>
     <h1>不意打ちを、見積りに変える</h1>
     <p class="lede">AI以前、実装している時間はそのまま理解する時間を兼ねていた。エージェントが実装の時間をほぼ消したが、消えたのは実装の分だけで、<strong>理解の分の請求書は消えていない</strong>——それがレビューとマージの席に、一度にまとまって届くようになった。</p>
-    <p class="lede">エージェント前提開発基準(v0.36)+スキル6本が変えるのは、作業の速さではない。<strong>理解コストが届く場所</strong>と、<strong>人間の判断が置かれる場所</strong>である。</p>
+    <p class="lede">エージェント前提開発基準(v0.37)+スキル6本が変えるのは、作業の速さではない。<strong>理解コストが届く場所</strong>と、<strong>人間の判断が置かれる場所</strong>である。</p>
   </header>
 
   <figure class="pf">
@@ -352,7 +352,7 @@
             <li><b>地図に触るのはこの段だけ</b>(ライフサイクルは下の囲みに)</li>
           </ul>
         </div>
-        <span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">捨てた選択肢の選別</span><span class="chip human">領域の決定</span><span class="chip human">地図の検収</span>
+        <span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">種別の確定とBの反映先</span><span class="chip human">捨てた選択肢の選別</span><span class="chip human">理解レベルの確定</span><span class="chip human">領域の確定</span><span class="chip human">地図の検収</span>
       </div>
     </div>
 
@@ -370,10 +370,10 @@
             <li>人間の対象は設計判断・契約の妥当性・構造理解対象のデータフロー・行レベル箇所。レビューは見積りに計上された作業になる</li>
             <li>独立照合はここで<b>突き合わせと裁定</b>だけ——期待値は前の段で実装と並列に書き終わっている。食い違い=仕様が2通りに読めた証拠</li>
             <li><b>裁定は3箇所に書き戻す</b>(仕様/設計メモ・裁定前に書かれたテスト・地図)——テストを放置すると間違った読みが「守るべき回帰」として保護される</li>
-            <li><b>理解レベル(行レベル該当か・ドメイン中核か)はここでドメインオーナーが確定する</b>——著者の自己申告では確定しない</li>
+            <li><b>理解レベル(行レベル該当か・ドメイン中核か)の確定はドメインオーナー</b>——著者の自己申告では確定しない。裁定が無ければPR確認の停止で、裁定が発生したらその後にここで確定する</li>
           </ul>
         </div>
-        <span class="chip skill">/first-review</span><span class="chip skill">/crosscheck</span><span class="chip human">裁定</span><span class="chip human">理解レベルの確定</span><span class="chip human">設計と契約の判断</span>
+        <span class="chip skill">/first-review</span><span class="chip skill">/crosscheck</span><span class="chip human">裁定</span><span class="chip human">設計と契約の判断</span>
       </div>
     </div>
 
@@ -412,9 +412,9 @@
   </div>
 
   <div class="gates">
-    <b>人間が止まる場所は、これで全部である(9ゲート)。</b>この一覧の外に人間の義務はない——
-    <span class="g">👤 設計メモへの合意</span><span class="g">👤 期待値の書き出し(理解検査)</span><span class="g">👤 期待値の書き出し(独立照合)</span><span class="g">👤 領域の決定</span><span class="g">👤 地図の初版検収</span><span class="g">👤 捨てた選択肢の選別</span><span class="g">👤 裁定</span><span class="g">👤 理解レベルの確定</span><span class="g">👤 マージの決断</span>
-    ——うち独立照合は不可逆系のみ、地図の検収は領域の初回のみ、裁定は食い違いが出たときのみ。一人運用では領域の決定は機械が決めて人が検査に回す。
+    <b>人間が判断する場所は、これで全部である(10ゲート。聞かれるのは標準ケースで停止3回——着手/PR確認/マージ——にまとめて)。</b>この一覧の外に人間の義務はない——
+    <span class="g">👤 設計メモへの合意</span><span class="g">👤 期待値の書き出し(理解検査)</span><span class="g">👤 期待値の書き出し(独立照合)</span><span class="g">👤 種別(A/B)の確定とBの反映先</span><span class="g">👤 捨てた選択肢の選別</span><span class="g">👤 理解レベルの確定</span><span class="g">👤 領域の確定</span><span class="g">👤 地図の初版検収</span><span class="g">👤 裁定</span><span class="g">👤 マージの決断</span>
+    ——うち独立照合は不可逆系のみ、地図の検収は領域の初回のみ、裁定は食い違いが出たときのみ。「種別の確定とBの反映先」は v0.37 での明示化で、仕事自体は基準§4が最初から著者に割り当てていたもの。領域は機械が diff から仮決めし、人が確定する。
   </div>
 
   <div class="maplife">
@@ -472,7 +472,7 @@
   </div>
 
   <footer>
-    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.36)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
+    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.37)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
   </footer>
 </div>
 
