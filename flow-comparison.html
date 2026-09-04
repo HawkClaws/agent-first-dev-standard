@@ -223,7 +223,7 @@
     <p class="eyebrow">Before / After — Agent-First Development</p>
     <h1>不意打ちを、見積りに変える</h1>
     <p class="lede">AI以前、実装している時間はそのまま理解する時間を兼ねていた。エージェントが実装の時間をほぼ消したが、消えたのは実装の分だけで、<strong>理解の分の請求書は消えていない</strong>——それがレビューとマージの席に、一度にまとまって届くようになった。</p>
-    <p class="lede">エージェント前提開発基準(v0.38)+スキル6本が変えるのは、作業の速さではない。<strong>理解コストが届く場所</strong>と、<strong>人間の判断が置かれる場所</strong>である。</p>
+    <p class="lede">エージェント前提開発基準(v0.39)+スキル6本が変えるのは、作業の速さではない。<strong>理解コストが届く場所</strong>と、<strong>人間の判断が置かれる場所</strong>である。</p>
   </header>
 
   <figure class="pf">
@@ -309,8 +309,8 @@
         <div class="cell-title">AIに委譲</div>
       </div>
       <div class="after">
-        <div class="cell-title">AIに委譲(ここは変えない)</div>
-        <div class="cell-note">委譲をやめる基準ではない。変わるのは報告の形だけ——完了報告に「迷った箇所・仕様が薄く補完した箇所」を残させる(著者が完了確認で読む。残す価値のある事実は地図かコードコメントへ)</div>
+        <div class="cell-title">AIに委譲(ここは変えない)。範囲は結合テストまで</div>
+        <div class="cell-note">委譲をやめる基準ではない。変わるのは範囲の明示と報告の形——委譲は実装・単体テスト・<b>結合テスト</b>(箱の境界を越える変更で必須。依存の実物か実物相当を通す)までを含み、完了報告に「迷った箇所・仕様が薄く補完した箇所」「結合テストで固定した境界・固定しなかった境界」を残させる(著者がPR確認の先頭で読む。残す価値のある事実は地図かコードコメントへ)</div>
         <span class="chip same">変更なし(委譲)</span>
       </div>
     </div>
@@ -332,7 +332,7 @@
             <li>第二解釈者がいない・契約が多い・仕様が入り組んでいる・過去に裁定が出た領域では、実装コードを見せないツール制限セッションにテストを生成させる(自動版)</li>
           </ul>
         </div>
-        <span class="chip skill">/crosscheck</span><span class="chip human">期待値の書き出し</span><span class="chip same">回帰検知用テストは従来どおり</span>
+        <span class="chip skill">/crosscheck</span><span class="chip human">期待値の書き出し</span><span class="chip same">回帰検知用テスト(単体・結合)はエージェントが書く</span>
       </div>
     </div>
 
@@ -472,7 +472,7 @@
   </div>
 
   <footer>
-    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.38)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
+    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.39)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
   </footer>
 </div>
 
