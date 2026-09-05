@@ -1,482 +1,358 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>不意打ちを、見積りに変える</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<title>不意打ちを、見積りに変える — エージェント前提開発 導入前後</title>
+<meta name="description" content="コーディングエージェントに実装を任せると、理解のコストがレビューとマージに一度に届く。この基準はそれを着手時に払う。導入前後を1枚で。">
 <style>
-  :root {
-    --paper: #F5F7F7;
-    --surface: #FFFFFF;
-    --ink: #1E2628;
-    --muted: #5D6A6E;
-    --line: #D8E0E1;
-    --accent: #0E7168;        /* 人間の判断・スキル */
-    --accent-ink: #0A554E;
-    --accent-soft: #E2EFEC;
-    --warn: #A4541A;          /* 従来の痛点 */
-    --warn-soft: #F6E9DC;
-    --ai: #EAEEEF;            /* AIがやる部分 */
+:root{
+  --bg:#faf9f6; --card:#ffffff; --ink:#1f2328; --mute:#5c6470; --line:#e4e1da;
+  --before:#b4473a; --before-bg:#fbeae7;
+  --after:#1f7a5a; --after-bg:#e4f3ec;
+  --human:#8a5a00; --human-bg:#fff1d6;
+  --skill:#2f5f9e; --skill-bg:#e6eef9;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15171a; --card:#1e2126; --ink:#e8e6e1; --mute:#9aa3ad; --line:#2e333a;
+    --before:#e98a7d; --before-bg:#3a2320;
+    --after:#6fcfa5; --after-bg:#1c332a;
+    --human:#f0b74a; --human-bg:#3a2e14;
+    --skill:#8fb4ea; --skill-bg:#1e2a3d;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #141A1B;
-      --surface: #1C2325;
-      --ink: #E3EAEA;
-      --muted: #94A3A6;
-      --line: #2B3538;
-      --accent: #47BFAF;
-      --accent-ink: #6FD2C5;
-      --accent-soft: #1D2F2C;
-      --warn: #D89A62;
-      --warn-soft: #2F2519;
-      --ai: #232C2E;
-    }
-  }
-  :root[data-theme="dark"] {
-    --paper: #141A1B;
-    --surface: #1C2325;
-    --ink: #E3EAEA;
-    --muted: #94A3A6;
-    --line: #2B3538;
-    --accent: #47BFAF;
-    --accent-ink: #6FD2C5;
-    --accent-soft: #1D2F2C;
-    --warn: #D89A62;
-    --warn-soft: #2F2519;
-    --ai: #232C2E;
-  }
+}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Noto Sans JP","Yu Gothic UI",Meiryo,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  line-height:1.85;font-feature-settings:"palt"}
+main{max-width:880px;margin:0 auto;padding:40px 20px 80px;overflow-wrap:anywhere}
+body{overflow-x:hidden}
+h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.3;margin:0 0 8px;letter-spacing:.01em}
+h2{font-size:1.35rem;margin:64px 0 16px;line-height:1.4}
+h2 small{display:block;font-size:.85rem;color:var(--mute);font-weight:normal;margin-top:2px}
+p{margin:0 0 14px}
+.lead{font-size:1.1rem;color:var(--ink)}
+.mute{color:var(--mute)}
+.eyebrow{color:var(--mute);font-size:.85rem;letter-spacing:.08em;margin:0 0 6px}
+a{color:var(--skill)}
+strong{font-weight:700}
 
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    font-size: 15px;
-    line-height: 1.8;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: 62rem; margin: 0 auto; padding: 3.5rem 1.25rem 4.5rem; }
+/* chips */
+.chip{display:inline-block;padding:1px 9px;border-radius:999px;font-size:.8rem;line-height:1.7;white-space:nowrap;vertical-align:middle}
+.chip.human{background:var(--human-bg);color:var(--human)}
+.chip.skill{background:var(--skill-bg);color:var(--skill);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.78rem}
+.chip.same{background:var(--line);color:var(--mute)}
 
-  .eyebrow {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: .72rem; letter-spacing: .18em; color: var(--accent);
-    margin: 0 0 .6rem;
-  }
-  h1 { font-size: 1.9rem; font-weight: 700; line-height: 1.45; margin: 0 0 .6rem; text-wrap: balance; }
-  .lede { color: var(--muted); max-width: 46rem; margin: 0 0 .8rem; }
-  .lede b, .lede strong { color: var(--ink); }
+/* the one picture */
+.picture{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 22px 18px;margin-top:22px}
+.lane{margin:0 0 22px}
+.lane:last-of-type{margin-bottom:6px}
+.lane-title{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;font-weight:700}
+.lane-title .tag{font-size:.8rem;font-weight:normal}
+.lane.before .lane-title{color:var(--before)}
+.lane.after .lane-title{color:var(--after)}
+.bar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.seg{border-radius:8px;padding:10px 8px;min-height:74px;font-size:.82rem;line-height:1.5;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.seg b{display:block;font-size:.9rem}
+.seg span{color:var(--mute);font-size:.76rem}
+.seg.pay{color:var(--ink)}
+.before .seg.pay{background:var(--before-bg)}
+.after .seg.pay{background:var(--after-bg)}
+.seg.idle{background:transparent;border:1px dashed var(--line);color:var(--mute)}
+.before .seg.hit{background:repeating-linear-gradient(135deg,var(--before-bg) 0 6px,transparent 6px 12px);border:1px solid var(--before)}
+.picture .caption{font-size:.85rem;color:var(--mute);margin:14px 0 0;line-height:1.7}
 
-  figure { margin: 2.5rem 0 0; }
+/* stops */
+.stops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+.stop{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px 14px;position:relative}
+.stop .num{position:absolute;top:-12px;left:16px;background:var(--human);color:#fff;border-radius:999px;width:26px;height:26px;display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.stop h3{margin:6px 0 4px;font-size:1.05rem}
+.stop .when{font-size:.82rem;color:var(--mute);margin:0 0 10px}
+.stop ul{margin:0;padding-left:0;list-style:none}
+.stop li{padding:5px 0;border-top:1px solid var(--line);font-size:.92rem;line-height:1.55}
+.stop li small{display:block;color:var(--mute);font-size:.8rem}
+.side{margin-top:14px;font-size:.9rem;color:var(--mute)}
+.side b{color:var(--ink)}
 
-  h2 { font-size: 1.25rem; font-weight: 700; margin: 3rem 0 .35rem; }
-  .sub { color: var(--muted); font-size: .88rem; margin: 0 0 1.25rem; }
+/* before/after rows */
+.rows{margin-top:16px;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:96px 1fr 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);align-items:start}
+.row .stage{font-weight:700;padding-top:2px}
+.row .stage small{display:block;font-weight:normal;color:var(--mute);font-size:.78rem}
+.cell{font-size:.95rem;line-height:1.7}
+.cell .lbl{font-size:.75rem;letter-spacing:.06em;display:block;margin-bottom:2px}
+.cell.b .lbl{color:var(--before)}
+.cell.a .lbl{color:var(--after)}
+.cell .chips{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+details{margin-top:6px}
+details summary{cursor:pointer;color:var(--skill);font-size:.85rem;list-style:none;user-select:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"＋ ";}
+details[open] summary::before{content:"－ ";}
+details .more{font-size:.88rem;color:var(--mute);margin-top:6px;line-height:1.75}
+details .more li{margin:2px 0}
+details .more ul{margin:0;padding-left:1.2em}
 
-  /* ---- 理解コストの配分図 ---- */
-  .pf { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.4rem 1.25rem 1.15rem; }
-  .pf-side { font-family: "IBM Plex Mono", monospace; font-size: .76rem; letter-spacing: .1em; color: var(--muted); margin: 0 0 .3rem; }
-  .pf-side.is-after { color: var(--accent-ink); }
-  .pf-track { display: flex; height: 2.5rem; border-radius: 6px; overflow: hidden; }
-  .pf-track span {
-    display: flex; align-items: center; justify-content: center;
-    font-size: .78rem; line-height: 1.25; text-align: center;
-    padding: 0 .3rem; overflow: hidden; white-space: nowrap;
-  }
-  .pf-track .in { background: var(--accent); color: var(--paper); font-weight: 500; }
-  .pf-track .out {
-    color: var(--warn); font-weight: 500;
-    background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--warn) 55%, transparent) 0 5px, transparent 5px 11px), var(--warn-soft);
-  }
-  .pf-where { font-size: .8rem; color: var(--muted); margin: .45rem 0 0; }
-  .pf-where b { color: var(--ink); font-weight: 500; }
-  .pf-block + .pf-block { margin-top: 1.5rem; }
-  .pf-total { font-size: .82rem; color: var(--muted); margin: 1.5rem 0 0; padding-top: .9rem; border-top: 1px dashed var(--line); }
-  .pf-total strong { color: var(--ink); font-weight: 700; }
-  .pf-caveat { font-size: .75rem; color: var(--muted); margin: .55rem 0 0; }
-  @media (max-width: 560px) { .pf-track span { font-size: .72rem; } }
+/* ledger */
+.ledger{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+.ledger .col{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.ledger h3{margin:0 0 8px;font-size:1rem}
+.ledger ul{margin:0;padding-left:1.1em;font-size:.92rem;line-height:1.7}
+.ledger .plus h3{color:var(--before)}
+.ledger .minus h3{color:var(--after)}
+.ledger .same h3{color:var(--mute)}
+.note{font-size:.85rem;color:var(--mute);margin-top:10px}
 
-  /* ---- 凡例 ---- */
-  .legend { display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; margin: 0 0 1.25rem; padding: 0; list-style: none; font-size: .82rem; color: var(--muted); }
-  .legend li { display: flex; align-items: baseline; gap: .4rem; }
-  .legend .chip { margin: 0; }
+/* glossary */
+.gloss{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:8px 18px}
+.gloss summary{font-size:1rem;color:var(--ink);padding:8px 0}
+.gloss dl{margin:6px 0 10px;display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:.92rem}
+.gloss dt{font-weight:700;white-space:nowrap}
+.gloss dd{margin:0;color:var(--mute)}
 
-  /* ---- この図の言葉 ---- */
-  .terms { margin: 1.5rem 0 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
-  .terms > summary { padding: .7rem 1.1rem; cursor: pointer; font-size: .86rem; font-weight: 500; }
-  .terms > summary::marker { color: var(--accent); }
-  .terms dl { margin: 0; padding: 0 1.1rem 1rem; display: grid; grid-template-columns: 8.5rem 1fr; gap: .3rem .9rem; font-size: .85rem; }
-  .terms dt { font-weight: 700; }
-  .terms dd { margin: 0; color: var(--muted); }
-  @media (max-width: 520px) { .terms dl { grid-template-columns: 1fr; gap: .05rem; } .terms dd { margin-bottom: .55rem; } }
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-size:.88rem;color:var(--mute);line-height:1.8}
 
-  /* ---- /flow の箱 ---- */
-  .flowbox {
-    margin: 0 0 18px; padding: 12px 14px;
-    border-left: 3px solid var(--accent);
-    background: var(--surface);
-    border-radius: 0 8px 8px 0;
-    font-size: .92em; line-height: 1.7;
-  }
-  .flowbox code { font-family: "IBM Plex Mono", monospace; font-size: .9em; background: var(--ai); padding: .05em .35em; border-radius: 4px; }
-
-  /* ---- 比較グリッド ---- */
-  .cmp { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
-  .cmp-head, .stage {
-    display: grid;
-    grid-template-columns: 6.2rem 1fr 1fr;
-  }
-  .cmp-head > div {
-    padding: .65rem 1rem;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: .72rem; letter-spacing: .12em;
-    color: var(--muted);
-    border-bottom: 2px solid var(--line);
-  }
-  .cmp-head .after-h { color: var(--accent-ink); }
-  .stage { border-bottom: 1px solid var(--line); }
-  .stage:last-child { border-bottom: none; }
-  .stage > div { padding: .9rem 1rem 1rem; }
-  .stage-name {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: .78rem; color: var(--muted);
-    padding-top: 1.05rem !important;
-  }
-  .before { border-right: 1px solid var(--line); }
-  .before, .after { font-size: .9rem; }
-  .after { background: color-mix(in srgb, var(--accent-soft) 34%, var(--surface)); }
-
-  .cell-title { font-weight: 700; font-size: .92rem; }
-  .cell-note { color: var(--muted); font-size: .85rem; margin-top: .1rem; }
-  .cell-note ul { margin: .3rem 0 0; padding-left: 1.15em; }
-  .cell-note li { margin: .18em 0; }
-  .cell-note b { color: var(--ink); font-weight: 500; }
-
-  .chip {
-    display: inline-block;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: .72rem;
-    padding: .05rem .5rem;
-    border-radius: 99px;
-    margin: .35rem .25rem 0 0;
-    white-space: nowrap;
-  }
-  .chip.pain  { background: var(--warn-soft); color: var(--warn); }
-  .chip.skill { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
-  .chip.human { background: var(--accent); color: var(--paper); }
-  .chip.same  { background: var(--ai); color: var(--muted); }
-
-  @media (max-width: 680px) {
-    .cmp-head { display: none; }
-    .stage { grid-template-columns: 1fr; }
-    .before { border-right: none; border-bottom: 1px dashed var(--line); }
-    .stage-name { padding-bottom: 0 !important; border-bottom: none; font-weight: 700; }
-    .before::before { content: "従来"; display: block; font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .12em; color: var(--muted); }
-    .after::before  { content: "導入後"; display: block; font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .12em; color: var(--accent-ink); }
-  }
-
-  /* ---- 👤の一覧 ---- */
-  .gates {
-    margin: 1rem 0 0; padding: .8rem 1.1rem;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
-    font-size: .85rem;
-  }
-  .gates b { color: var(--accent-ink); }
-  .gates .g {
-    display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: .74rem;
-    background: var(--accent-soft); color: var(--accent-ink);
-    padding: .02rem .5rem; border-radius: 99px; margin: .15rem .15rem 0 0; white-space: nowrap;
-  }
-
-  /* ---- 地図のライフサイクル ---- */
-  .maplife { margin: 1rem 0 0; padding: .8rem 1.1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; font-size: .85rem; }
-  .maplife ol { margin: .3rem 0 0; padding-left: 1.3em; color: var(--muted); }
-  .maplife li { margin: .15em 0; }
-  .maplife b { color: var(--ink); font-weight: 500; }
-
-  /* ---- 正直な収支 ---- */
-  .balance { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
-  .bcard { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; }
-  .bcard h3 { margin: 0 0 .4rem; font-size: .95rem; }
-  .bcard ul { margin: 0; padding-left: 1.15em; font-size: .87rem; color: var(--muted); }
-  .bcard li { margin-bottom: .3em; }
-  .bcard.cost h3 { color: var(--warn); }
-  .bcard.gain h3 { color: var(--accent-ink); }
-  @media (max-width: 680px) { .balance { grid-template-columns: 1fr; } }
-
-  /* ---- この基準自身の検証 ---- */
-  .verify { margin-top: 1.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; font-size: .88rem; }
-  .verify ul { margin: .4rem 0 0; padding-left: 1.15em; color: var(--muted); }
-  .verify li { margin-bottom: .3em; }
-  .verify b { color: var(--ink); font-weight: 500; }
-  .verify a { color: var(--accent-ink); }
-
-  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .82rem; color: var(--muted); }
-  footer a { color: var(--accent-ink); }
+@media (max-width:680px){
+  .bar{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
+  .seg{padding:8px 4px;min-height:64px;font-size:.72rem}
+  .seg b{font-size:.78rem}
+  .seg span{display:none}
+  .stops,.ledger{grid-template-columns:1fr}
+  .stop{margin-top:10px}
+  .row{grid-template-columns:1fr}
+  .row .stage{border-left:3px solid var(--line);padding-left:10px}
+  .gloss dl{grid-template-columns:1fr;gap:2px}
+  .gloss dd{margin-bottom:8px}
+  h2{margin-top:48px}
+}
 </style>
 </head>
 <body>
+<main>
 
-<div class="wrap">
-  <header>
-    <p class="eyebrow">Before / After — Agent-First Development</p>
-    <h1>不意打ちを、見積りに変える</h1>
-    <p class="lede">AI以前、実装している時間はそのまま理解する時間を兼ねていた。エージェントが実装の時間をほぼ消したが、消えたのは実装の分だけで、<strong>理解の分の請求書は消えていない</strong>——それがレビューとマージの席に、一度にまとまって届くようになった。</p>
-    <p class="lede">エージェント前提開発基準(v0.42)+スキル6本が変えるのは、作業の速さではない。<strong>理解コストが届く場所</strong>と、<strong>人間の判断が置かれる場所</strong>である。</p>
-  </header>
+<p class="eyebrow">エージェント前提開発 — 導入前と導入後</p>
+<h1>不意打ちを、<br>見積りに変える。</h1>
+<p class="lead">AIが実装の時間を消しても、<strong>理解する時間は消えていない</strong>。それがレビューとマージの席に、まとめて届くようになった。</p>
+<p class="mute">この基準がやることは一つ。理解のコストを<strong>着手のときに、見積りに入れて払う</strong>。</p>
 
-  <figure class="pf">
-    <div class="pf-block">
-      <p class="pf-side">従来</p>
-      <div class="pf-track" role="img" aria-label="従来は、理解コストのほぼ全部が見積り外の不意打ちとして届く">
-        <span class="in" style="width:6%"></span>
-        <span class="out" style="width:94%">見積り外の不意打ちとして届く</span>
-      </div>
-      <p class="pf-where">届く場所 → <b>レビュー</b>(文脈ゼロから全行) / <b>マージ</b>(判断の基準がない) / <b>障害対応</b>(聞くしかない)</p>
-    </div>
-
-    <div class="pf-block">
-      <p class="pf-side is-after">導入後</p>
-      <div class="pf-track" role="img" aria-label="導入後は、ほぼ同じ量が見積りに入った計画された作業に置き換わる">
-        <span class="in" style="width:92%">見積りに入った作業として払う</span>
-        <span class="out" style="width:8%"></span>
-      </div>
-      <p class="pf-where">払う場所 → <b>着手</b>(設計メモ 10〜15分) / <b>実装と並列</b>(期待値の書き出し) / <b>PR作成</b>(領域の初回は地図の検収) / <b>レビュー</b>(レビュー指定に従って読む+裁定) / <b>定常運用</b>(地図の維持・訓練・月イチ検査)</p>
-    </div>
-
-    <p class="pf-total">横幅=人間が払う理解コストの総量。<strong>2本を同じ長さにしてあるのは、減ると主張できる実測がないからである。</strong>短期ではむしろ少し増える(下の「正直な収支」)。この基準が変えるのは総量ではなく、<strong>それが見積りに入っているか</strong>——斜線が色に反転すること、それだけが導入の効果である。</p>
-    <p class="pf-caveat">※ 実測値ではなく、この基準が狙う配分の模式図。総量がどう動くかは各チームが実測する項目(レビュー時間・障害対応時間・切り分け成功率 → 基準§7)。段階ごとの中身は下の表に、増える手間の内訳は「正直な収支」に。</p>
-  </figure>
-
-  <details class="terms" open>
-    <summary>この図で使う言葉(8つ)</summary>
-    <dl>
-      <dt>契約</dt><dd>呼び出しの約束を書き出したもの。「この入力を渡せば、この出力が返る。失敗するときはこう失敗する(そのとき DB には何も書かない)」——この3行が契約で、バグとはどちらかがこの約束を破ること</dd>
-      <dt>理解レベル</dt><dd>理解の深さの3段階。契約理解(一文で言える)/構造理解(データの流れを説明できる)/行レベル理解(一行ずつ説明できる)。PRで範囲ごとに指定する(下書きは著者、<strong>確定はドメインオーナー</strong>——低いレベルに倒すほど著者が得をするため、自己申告では確定させない)</dd>
-      <dt>不可逆系</dt><dd>やり直しが効かないもの。DBスキーマ変更・データ移行・課金・外部送信・削除。ここは行レベル理解が必須</dd>
-      <dt>地図</dt><dd>何がどこに繋がっているか・契約・壊してはいけない条件・危険箇所を、判断に使える短さでまとめたもの(領域ごとに200行以内)</dd>
-      <dt>理解検査 / 独立照合</dt><dd>実装の出力を見る<strong>前</strong>に契約の期待値を書き出し、実装と突き合わせること。<strong>著者</strong>が書けば理解検査(標準)、<strong>実装方針を書いていない人</strong>が書けば独立照合(不可逆系で必須)</dd>
-      <dt>裁定</dt><dd>照合で仕様の読みが2通りに割れたとき、どちらが意図だったかを人間が決めること</dd>
-      <dt>出力との突き合わせ</dt><dd>計測・集計・エクスポート系の変更で、実データを1本通して値の分布と代表的な集計を実際に出し、読み手が正しい結論に至るかを確かめること</dd>
-      <dt>結合テスト</dt><dd>箱の境界を越える契約を、依存の実物か実物相当を通して固定するテスト(不可逆系の境界は実物に通さない)。箱の中を固定する単体テストと区別する。どちらもエージェントが書く(委譲の範囲)</dd>
-    </dl>
-  </details>
-
-  <h2>段階別の変化</h2>
-  <p class="sub">左が従来、右が導入後。</p>
-  <ul class="legend">
-    <li><span class="chip pain">▲ 痛点</span> いま困っていること</li>
-    <li><span class="chip skill">/skill</span> スキルが下書きと機械検査をやる</li>
-    <li><span class="chip human">人間</span> 空欄として残る判断(Human-in-the-Loop)</li>
-    <li><span class="chip same">変更なし</span> 従来のまま</li>
-  </ul>
-
-  <p class="flowbox">
-    <strong>下の各段は <code>/flow &lt;チケットID&gt; &lt;チケットの本文かURL/パス&gt;</code> が進める</strong>(2回目以降はIDだけでよい)。
-    機械でできる工程(下書き・機械検査・突き合わせ・記録)を連続実行し、<strong>人間の判断が必要なところで止まる</strong>。
-    止まるたびに「フローのどこにいるか・あと何回止まるか・次に止まるまで何分走るか・未マージのブランチ」を先頭に報告する(判断に必要な材料が無いときも、勝手に補完せず止まって聞く)。
-    答えてもう一度呼べば続きが走る。状態はリポジトリの外 <code>~/.flow/&lt;リポジトリ名&gt;/&lt;チケットID&gt;.md</code> のチェックリストに残り、
-    <strong>その👤付き項目の一覧が、そのチケットで人間が担当した範囲そのもの</strong>になる。
-    マージ・プッシュ・デプロイはしない(マージの決断は人間)。
-  </p>
-
-  <div class="cmp">
-    <div class="cmp-head"><div>段階</div><div>従来</div><div class="after-h">導入後</div></div>
-
-    <div class="stage">
-      <div class="stage-name">着手</div>
-      <div class="before">
-        <div class="cell-title">チケットを読んで、すぐAIに投げる</div>
-        <div class="cell-note">方針は頭の中。チームに共有されない</div>
-        <span class="chip pain">▲ 文脈が個人に閉じる</span>
-      </div>
-      <div class="after">
-        <div class="cell-title">10行の方針メモを流し、異論を確認(10〜15分)</div>
-        <div class="cell-note">文脈の先払い。レビューの席で初めて文脈を獲得する最悪の形を防ぐ。
-          <ul>
-            <li>メモには<b>返事の期限を明記</b>する(期限のないメモは合意形成ではなく着手通知に落ちる)。<b>不可逆系は無返事では進まず、明示的な承認を待つ</b></li>
-            <li>契約を変えるなら「契約」欄を埋めて承認——これが理解検査・独立照合の材料になる</li>
-            <li>既にある地図はここでは触らない(地図は現実の記述。更新は実装後のPRの中)</li>
-          </ul>
-        </div>
-        <span class="chip skill">/design-memo</span><span class="chip human">合意</span>
-      </div>
-    </div>
-
-    <div class="stage">
-      <div class="stage-name">実装</div>
-      <div class="before">
-        <div class="cell-title">AIに委譲</div>
-      </div>
-      <div class="after">
-        <div class="cell-title">AIに委譲(ここは変えない)。範囲は結合テストまで</div>
-        <div class="cell-note">委譲をやめる基準ではない。変わるのは範囲の明示と報告の形——委譲は実装・単体テスト・<b>結合テスト</b>(箱の境界を越える変更で必須。依存の実物か実物相当を通す)までを含み、完了報告に「迷った箇所・仕様が薄く補完した箇所」「結合テストで固定した境界・固定しなかった境界」を残させる(著者がPR確認で読む。残す価値のある事実は地図かコードコメントへ)</div>
-        <span class="chip same">変更なし(委譲)</span>
-      </div>
-    </div>
-
-    <div class="stage">
-      <div class="stage-name">テスト</div>
-      <div class="before">
-        <div class="cell-title">実装と同じセッションがテストも書く</div>
-        <div class="cell-note">実装に合わせたテストが通るだけ</div>
-        <span class="chip pain">▲ 自作自演(検証になっていない)</span>
-      </div>
-      <div class="after">
-        <div class="cell-title">期待値は、実装の出力を見る前に人間が書く</div>
-        <div class="cell-note">実装と同じセッションのテストは回帰検知用と割り切る。
-          <ul>
-            <li><b>標準は理解検査</b>——著者が実装の出力を見る前に、契約ごとの期待値(成功したら/失敗したら/前提)を自分の言葉で書く。書けない欄があること自体が検査結果</li>
-            <li><b>不可逆系は独立照合が必須</b>——書き手は実装方針を書いていない人(レビュアー/ドメインオーナー)</li>
-            <li>どちらも<b>実装と並列</b>に書く。委譲が先・期待値が後の順序を守れば、隔離は指示ではなく構成で保証される(逆順は「独立性は指示ベース」と記録に残る)。クリティカルパスにも乗らない</li>
-            <li>第二解釈者がいない・契約が多い・仕様が入り組んでいる・過去に裁定が出た領域では、実装コードを見せないツール制限セッションにテストを生成させる(自動版)。機械が回せない境界や文書の納品が要る場合は、同じ隔離で<b>結合テスト仕様書</b>を書かせ、人が実行して突き合わせる</li>
-          </ul>
-        </div>
-        <span class="chip skill">/crosscheck</span><span class="chip human">期待値の書き出し</span><span class="chip same">回帰検知用テスト(単体・結合)はエージェントが書く</span>
-      </div>
-    </div>
-
-    <div class="stage">
-      <div class="stage-name">PR作成</div>
-      <div class="before">
-        <div class="cell-title">説明が薄い、またはAIの冗長な長文</div>
-        <span class="chip pain">▲ レビュアーが文脈ゼロから読む</span>
-      </div>
-      <div class="after">
-        <div class="cell-title">機械記入欄は下書き、レビュー指定(行/構造/契約)を提案</div>
-        <div class="cell-note">
-          <ul>
-            <li>「捨てた選択肢」はAIが生成しない(著者本人の発言の逐語転記のみ可、選別は著者)</li>
-            <li>理解検査の突き合わせもここ——「仕様が2通りに読めた」ものだけPRに載せ、「知らなかった」ものはコード・地図に反映する</li>
-            <li>計測・集計・エクスポート系なら<b>実データを1本通して分布と集計を見る</b>(出力との突き合わせ)</li>
-            <li><b>地図に触るのはこの段だけ</b>(ライフサイクルは下の囲みに)</li>
-          </ul>
-        </div>
-        <span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">種別の確定とBの反映先</span><span class="chip human">捨てた選択肢の選別</span><span class="chip human">理解レベルの確定</span><span class="chip human">領域の確定</span><span class="chip human">地図の検収</span>
-      </div>
-    </div>
-
-    <div class="stage">
-      <div class="stage-name">レビュー</div>
-      <div class="before">
-        <div class="cell-title">全行を同じ濃度で読む(または感覚で流す)</div>
-        <div class="cell-note">負担が見積りに存在しない</div>
-        <span class="chip pain">▲ 負担が計上されない</span><span class="chip pain">▲ 読む深さが属人的</span>
-      </div>
-      <div class="after">
-        <div class="cell-title">機械検査はAIが先に潰し、人間は指定された深さで読む</div>
-        <div class="cell-note">
-          <ul>
-            <li>人間の対象は設計判断・契約の妥当性・構造理解対象のデータフロー・行レベル箇所。レビューは見積りに計上された作業になる</li>
-            <li>独立照合はここで<b>突き合わせと裁定</b>だけ——期待値は前の段で実装と並列に書き終わっている。食い違い=仕様が2通りに読めた証拠</li>
-            <li><b>裁定は3箇所に書き戻す</b>(仕様/設計メモ・裁定前に書かれたテスト・地図)——テストを放置すると間違った読みが「守るべき回帰」として保護される</li>
-            <li><b>理解レベル(行レベル該当か・ドメイン中核か)の確定はドメインオーナー</b>——著者の自己申告では確定しない。裁定が無ければPR確認の停止で、裁定が発生したらその後にここで確定する</li>
-          </ul>
-        </div>
-        <span class="chip skill">/first-review</span><span class="chip skill">/crosscheck</span><span class="chip human">裁定</span><span class="chip human">設計と契約の判断</span>
-      </div>
-    </div>
-
-    <div class="stage">
-      <div class="stage-name">マージ</div>
-      <div class="before">
-        <div class="cell-title">「テスト通ってるからヨシ」</div>
-        <span class="chip pain">▲ 基準がなく、不安か過信の二択</span>
-      </div>
-      <div class="after">
-        <div class="cell-title">基準:障害時に「どの箱が壊れたか」言えるか</div>
-        <div class="cell-note">全行の追跡ではなく地図レベル。マージ=地図で追跡できる状態の確認(一次対応はオンコールのロール)。
-          <ul>
-            <li>前提:触る領域の地図が検収済み(発効は領域ごと。未検収なら保留と明示)</li>
-            <li>不可逆な副作用が「なし」以外なら、検査欄が「独立照合(人間版/自動版)」であること(理解検査では満たさない)</li>
-            <li>計測・集計系なら「出力との突き合わせ」が実施済みであること</li>
-            <li>箱の境界を越える変更なら「結合テスト」の行が「対象外」でないこと</li>
-          </ul>
-        </div>
-        <span class="chip human">決断(責任)</span>
-      </div>
-    </div>
-
-    <div class="stage">
-      <div class="stage-name">障害対応<br><span style="font-weight:400;opacity:.7">と定期検査</span></div>
-      <div class="before">
-        <div class="cell-title">エージェントに聞くしかない</div>
-        <div class="cell-note">何を聞けばいいかも分からない。原因究明チャットが終わるまで何もできない</div>
-        <span class="chip pain">▲ 理解の単一障害点</span>
-      </div>
-      <div class="after">
-        <div class="cell-title">地図で壊れた箱を特定 → 必要な箇所だけAIと降りる</div>
-        <div class="cell-note">緩和と修正を分離できる(まず止血、原因対応は後)。判明した仕様・依存・注意点は地図へ書き戻す。月イチの矛盾検査で地図とコードのズレを拾う(担当と実行手段はカレンダーかCIジョブで決めておく——担当の無い定期検査は発火しない)</div>
-        <span class="chip skill">/update-map</span><span class="chip human">仮説と切り分け</span>
-      </div>
+<!-- ============ 1. THE PICTURE ============ -->
+<section class="picture" aria-label="理解コストが届く場所の比較">
+  <div class="lane before">
+    <div class="lane-title"><span>従来</span><span class="tag">理解コストは、見積り外の不意打ちとして届く</span></div>
+    <div class="bar">
+      <div class="seg idle"><b>着手</b><span>すぐAIに投げる</span></div>
+      <div class="seg idle"><b>実装</b><span>AIがやる</span></div>
+      <div class="seg hit"><b>レビュー</b><span>文脈ゼロから全行</span></div>
+      <div class="seg hit"><b>マージ</b><span>基準がない</span></div>
+      <div class="seg hit"><b>障害</b><span>AIに聞くしかない</span></div>
     </div>
   </div>
-
-  <div class="gates">
-    <b>人間が判断する場所は、これで全部である(10ゲート。聞かれるのは標準ケースで停止3回——着手/PR確認/マージ——にまとめて)。</b>この一覧の外に人間の判断はない(知識の申告と、結合テスト仕様書を採ったときのその実行は、判断ではない作業として別に残る。レビューでの読解と障害対応の切り分けは、ゲートではなく判断の作業である)——
-    <span class="g">👤 設計メモへの合意</span><span class="g">👤 期待値の書き出し(理解検査)</span><span class="g">👤 期待値の書き出し(独立照合)</span><span class="g">👤 種別(A/B)の確定とBの反映先</span><span class="g">👤 捨てた選択肢の選別</span><span class="g">👤 理解レベルの確定</span><span class="g">👤 領域の確定</span><span class="g">👤 地図の初版検収</span><span class="g">👤 裁定</span><span class="g">👤 マージの決断</span>
-    ——うち独立照合は不可逆系のみ、地図の検収は領域の初回のみ、裁定は食い違いが出たときのみ。「種別の確定とBの反映先」は v0.37 での明示化で、仕事自体は基準§4が最初から著者に割り当てていたもの。領域は機械が diff から仮決めし、人が確定する。
-  </div>
-
-  <div class="maplife">
-    <b>地図のライフサイクル(いつ触るか)</b>
-    <ol>
-      <li><b>初版</b> — その領域に初めて触るPRの中で生成(領域ごとに一度だけ。先に全部作る工程は無い)</li>
-      <li><b>検収</b> — ドメインオーナーが Level 2(不変条件)・3(危険領域)を通読・修正。済むまでその領域のマージゲートは発効しない</li>
-      <li><b>更新</b> — 契約・不変条件・危険領域を変えたPRに同梱(マージ後に回さない)</li>
-      <li><b>障害後</b> — 判明した事実の書き戻し(これだけが事後更新)</li>
-      <li><b>月イチ</b> — 地図とコードの矛盾検査。齟齬の判定は人間</li>
-    </ol>
-  </div>
-
-  <h2>正直な収支</h2>
-  <p class="sub">導入はタダではない。増える手間を隠さずに置く。</p>
-  <div class="balance">
-    <div class="bcard cost">
-      <h3>増える手間</h3>
-      <ul>
-        <li>設計メモ 10〜15分/チケット(基準§7)</li>
-        <li>理解検査の期待値・捨てた選択肢を自分で書く(領域の初回は地図の検収も)</li>
-        <li>障害時の地図への書き戻し 数分/件</li>
-        <li>独立照合(不可逆系のみ)・裁定・訓練・地図維持・月イチ検査(これらも見積りに計上する)</li>
-        <li>目安: チケットあたり +20分前後 + 定常運用分(※この目安は基準を1周回した記録 TICKET-143 の1回実測から。基準本文の数字ではない)</li>
-      </ul>
-    </div>
-    <div class="bcard gain">
-      <h3>減るもの</h3>
-      <ul>
-        <li>文脈ゼロからのレビュー読解</li>
-        <li>全行精読(理解レベルの指定で置換)</li>
-        <li>テストの自作自演</li>
-        <li>マージ時の根拠のない不安</li>
-        <li>障害時の「聞くしかない」状態</li>
-      </ul>
-    </div>
-    <div class="bcard">
-      <h3>変わらないもの</h3>
-      <ul>
-        <li>実装をAIに委譲すること</li>
-        <li>判断と責任が人間にあること(空欄として見える形になるだけ)</li>
-        <li>守られない項目は削る、という改訂前提</li>
-      </ul>
+  <div class="lane after">
+    <div class="lane-title"><span>導入後</span><span class="tag">見積りに入った作業として払う</span></div>
+    <div class="bar">
+      <div class="seg pay"><b>着手</b><span>聞き取りで設計を決める</span></div>
+      <div class="seg pay"><b>実装中</b><span>不可逆系だけ第二の目</span></div>
+      <div class="seg pay"><b>PR確認</b><span>メモ外の決定を仕分ける</span></div>
+      <div class="seg pay"><b>マージ</b><span>「どの箱か」言える</span></div>
+      <div class="seg pay"><b>障害</b><span>地図で箱を特定</span></div>
     </div>
   </div>
+  <p class="caption">横幅は人間が払う理解コスト。2本を同じ長さにしているのは、<strong>減ると言える実測がまだ無い</strong>から。変わるのは総量ではなく、それが見積りに入っているかどうか。</p>
+</section>
 
-  <h2>この基準自身も、敵対的検証を通している</h2>
-  <div class="verify">
-    「実装を経由していない解釈と突き合わせる」(独立照合)を自分の主張にも適用する——この基準の改訂は、<b>提案を反証専任のAIに攻めさせ、生き残ったものだけを採る</b>形で回している。
+<!-- ============ 2. THREE STOPS ============ -->
+<h2>人間がやることは、3回止まって答えるだけ<small>機械が下書き・検査・記録を進め、判断が要るところで止まる。<span class="chip human">👤</span> が人間の判断</small></h2>
+
+<div class="stops">
+  <div class="stop">
+    <div class="num">1</div>
+    <h3>着手</h3>
+    <p class="when">チケットを読んだ直後。実装はこの後に走る</p>
     <ul>
-      <li>採らなかった案は、反証(具体的な失敗シナリオ)つきで <a href="https://github.com/HawkClaws/agent-first-dev-standard/blob/main/CHANGELOG.md">CHANGELOG</a> に残る。「検討して採らなかったもの」の節がそれである</li>
-      <li>自分の機構も例外ではない——フローの同時進行検査は5版にわたる改良の末、v0.35 で敵対的検証により<b>機構ごと削除</b>された(git から運用状態を判定する設計自体が誤りの源だった)</li>
-      <li>実測の無い効果は主張しない。上の配分図の2本が同じ長さなのも、「減る」と言える実測が無いからである</li>
+      <li><span class="chip human">👤</span> 聞き取りに答えて設計を決める<small>1問ずつ、曖昧さが尽きるまで。答えはそのまま書き留められる。答えられない問いがあること自体が結果</small></li>
+      <li><span class="chip human">👤</span> チームが確認事項に答える<small>設計そのものは流さない。確認したほうが良い点だけ機械が推奨。0件なら聞かれない。不可逆系は明示承認</small></li>
     </ul>
   </div>
+  <div class="stop">
+    <div class="num">2</div>
+    <h3>PR確認</h3>
+    <p class="when">実装とAI一次レビューが終わった後。読む前に決める</p>
+    <ul>
+      <li><span class="chip human">👤</span> メモ外の決定を仕分ける<small>実装が設計メモに無くて自分で決めたこと。受け入れ(反映先を指定)/ 差し戻し / 裁定へ</small></li>
+      <li><span class="chip human">👤</span> 捨てた選択肢を選ぶ<small>候補は自分の発言から機械が転記済み</small></li>
+      <li><span class="chip human">👤</span> 理解レベルと領域を確定する<small>ドメインオーナー。著者の自己申告では決めない</small></li>
+      <li><span class="chip human">👤</span> 地図の初版を検収する<small>その領域に初めて触るPRだけ</small></li>
+    </ul>
+  </div>
+  <div class="stop">
+    <div class="num">3</div>
+    <h3>マージ</h3>
+    <p class="when">決断の場。機械はマージしない</p>
+    <ul>
+      <li><span class="chip human">👤</span> マージを決める<small>基準は一つ:障害のとき「どの箱が壊れたか」を言えるか</small></li>
+    </ul>
+  </div>
+</div>
+<p class="side">条件つきで増える止まりどころが2つ。<b>不可逆系</b>(DB・課金・外部送信・削除)では、実装方針を書いていない人が期待値を先に書く「独立照合」。仕様の読みが2通りに割れたら、どちらが意図かを決める「裁定」。これで人間の判断は全部で10個。<b>この一覧の外に人間の判断はない。</b></p>
+<p class="side">進めるのは <span class="chip skill">/flow &lt;チケットID&gt;</span>。止まるたびに「いまどこか・あと何回止まるか・次まで何分か」を先頭に出す。</p>
 
-  <footer>
-    基準本文とスキル: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.42)。この図は導入判断用の要約であり、正確な定義は基準本文が優先。
-  </footer>
+<!-- ============ 3. BEFORE / AFTER BY STAGE ============ -->
+<h2>段階ごとに、何が変わるか<small>左が従来、右が導入後。詳しくは「＋」を開く</small></h2>
+
+<div class="rows">
+
+  <div class="row">
+    <div class="stage">着手</div>
+    <div class="cell b"><span class="lbl">従来</span>チケットを読んで、すぐAIに投げる。方針は頭の中。</div>
+    <div class="cell a"><span class="lbl">導入後</span>エージェントの問いに1問ずつ答えて設計を決める。チームに流すのは確認したほうが良い点だけ。
+      <div class="chips"><span class="chip skill">/design-memo</span><span class="chip human">👤 聞き取り・確認事項</span></div>
+      <details><summary>もう少し</summary><div class="more"><ul>
+        <li>問いは曖昧さが尽きるまで続く。推奨回答は出ない(出すと機械の案に○を付ける形になる)。答えはそのまま設計メモになり、長さは決めたことの数で決まる</li>
+        <li>設計メモはチケットと同じ場所に置くが、チームは読まなくてよい。チームに聞くのは、不可逆な副作用・契約や境界の変更・他人の領域・著者が決められなかった点だけ。機械が推奨し、著者が確定する</li>
+        <li>確認事項には返事の期限を書く。期限のない問いは合意ではなく着手通知になる。不可逆系は無返事では進まない</li>
+        <li>契約(入力・出力・失敗の仕方)を変えるなら「契約」欄を埋める。不可逆系の独立照合の材料になる</li>
+      </ul></div></details>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage">実装</div>
+    <div class="cell b"><span class="lbl">従来</span>AIに委譲する。</div>
+    <div class="cell a"><span class="lbl">導入後</span>AIに委譲する。ここは変えない。範囲は結合テストまで。
+      <div class="chips"><span class="chip same">変更なし</span></div>
+      <details><summary>もう少し</summary><div class="more"><ul>
+        <li>変わるのは範囲の明示と報告の形。実装・単体テスト・結合テスト(箱の境界を越える変更で必須)までを任せる</li>
+        <li>完了報告に「迷った箇所・仕様が薄くて補完した箇所」を残させる。著者がPR確認で読む</li>
+      </ul></div></details>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage">テスト</div>
+    <div class="cell b"><span class="lbl">従来</span>実装と同じセッションがテストも書く。実装に合わせたテストが通るだけ。</div>
+    <div class="cell a"><span class="lbl">導入後</span>実装が設計メモに無くて自分で決めたことを申告させ、著者が仕分ける。不可逆系は第二の目が期待値を先に書く。
+      <div class="chips"><span class="chip skill">/crosscheck</span><span class="chip human">👤 仕分け・期待値</span></div>
+      <details><summary>もう少し</summary><div class="more"><ul>
+        <li><b>標準は「メモ外の決定」の仕分け</b>。実装エージェントは完了報告の先頭に、設計メモに無くて自分で決めたことを1件1行で申告する。著者は1件ずつ、受け入れ(コード・コメント・地図のどこに反映するか指定)/ 差し戻し / 裁定へ、に仕分ける</li>
+        <li>著者が実装後に自分の期待値を突き合わせる工程は置かない。聞き尽くした設計は実装の入力なので、突き合わせても一致が自動生成されるだけ</li>
+        <li><b>不可逆系は独立照合</b>。書き手は実装方針を書いていない人が、実装と並列に期待値を書く。第二解釈者がいなければ、実装を見せないAIセッションにテストか結合テスト仕様書を書かせる。委譲が先・期待値が後の順序で、隔離は指示ではなく構成で保証される</li>
+        <li>実装セッションのテストは回帰検知用と割り切る</li>
+      </ul></div></details>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage">PR作成</div>
+    <div class="cell b"><span class="lbl">従来</span>説明が薄い。またはAIの冗長な長文。レビュアーは文脈ゼロから読む。</div>
+    <div class="cell a"><span class="lbl">導入後</span>機械が下書きし、どこをどの深さで読むか(行/構造/契約)を提案する。
+      <div class="chips"><span class="chip skill">/pr-guide</span><span class="chip skill">/update-map</span><span class="chip human">👤 仕分け・選別・確定・検収</span></div>
+      <details><summary>もう少し</summary><div class="more"><ul>
+        <li>「捨てた選択肢」はAIが生成しない。著者本人の発言の転記だけ。選ぶのは著者</li>
+        <li>PRに載せるのは裁定が要るものだけ。受け入れたメモ外の決定はコードのコメントか地図に反映され、差分として現れる</li>
+        <li>計測・集計・エクスポート系なら、実データを1本通して分布と集計を見る(値が正しくても、読んだ人が誤った結論に至ることがある)</li>
+        <li>地図に触るのはこの段だけ。初版はその領域に初めて触るPRで作り、更新はPRに同梱する</li>
+      </ul></div></details>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage">レビュー</div>
+    <div class="cell b"><span class="lbl">従来</span>全行を同じ濃度で読む。または感覚で流す。負担は見積りに存在しない。</div>
+    <div class="cell a"><span class="lbl">導入後</span>機械検査はAIが先に潰す。人間は指定された深さで読む。見積りに計上された作業になる。
+      <div class="chips"><span class="chip skill">/first-review</span><span class="chip human">👤 裁定</span></div>
+      <details><summary>もう少し</summary><div class="more"><ul>
+        <li>人間が見るのは設計判断・契約の妥当性・構造理解対象のデータフロー・行レベル箇所</li>
+        <li>独立照合は突き合わせと裁定だけ。期待値は前の段で書き終わっている</li>
+        <li>裁定は3箇所に書き戻す(仕様/設計メモ・裁定前に書かれたテスト・地図)。テストを放置すると間違った読みが「守るべき回帰」として保護される</li>
+      </ul></div></details>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage">マージ</div>
+    <div class="cell b"><span class="lbl">従来</span>「テスト通ってるからヨシ」。基準がなく、不安か過信の二択。</div>
+    <div class="cell a"><span class="lbl">導入後</span>基準は「障害のとき、どの箱が壊れたか言えるか」。全行ではなく地図レベル。
+      <div class="chips"><span class="chip human">👤 決断</span></div>
+      <details><summary>もう少し</summary><div class="more"><ul>
+        <li>触る領域の地図が検収済みであること(未検収なら保留と明示)</li>
+        <li>不可逆系なら「独立照合」を通していること。著者の聞き取りと仕分けでは満たさない</li>
+        <li>計測・集計系なら「出力との突き合わせ」済み。箱の境界を越えるなら結合テストが「対象外」でないこと</li>
+      </ul></div></details>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage">障害対応<small>と定期検査</small></div>
+    <div class="cell b"><span class="lbl">従来</span>AIに聞くしかない。何を聞けばいいかも分からない。</div>
+    <div class="cell a"><span class="lbl">導入後</span>地図で壊れた箱を特定し、必要な箇所だけAIと降りる。まず止血、原因は後。
+      <div class="chips"><span class="chip skill">/update-map</span></div>
+      <details><summary>もう少し</summary><div class="more"><ul>
+        <li>判明した仕様・依存・注意点は地図へ書き戻す。事後に地図を触るのはこれだけ</li>
+        <li>月イチで地図とコードの矛盾検査。担当と実行手段を先に決めておく(担当の無い定期検査は発火しない)</li>
+      </ul></div></details>
+    </div>
+  </div>
+
 </div>
 
+<!-- ============ 4. LEDGER ============ -->
+<h2>正直な収支<small>導入はタダではない</small></h2>
+<div class="ledger">
+  <div class="col plus">
+    <h3>増える</h3>
+    <ul>
+      <li>着手時の聞き取り(所要は未実測)</li>
+      <li>聞き取りに答える(決めることの数だけ)。捨てた選択肢を選ぶ</li>
+      <li>領域の初回だけ、地図の検収</li>
+      <li>障害時の地図への書き戻し 数分/件</li>
+    </ul>
+  </div>
+  <div class="col minus">
+    <h3>減る</h3>
+    <ul>
+      <li>文脈ゼロからのレビュー読解</li>
+      <li>全行精読(深さの指定で置き換え)</li>
+      <li>テストの自作自演</li>
+      <li>マージ時の根拠のない不安</li>
+      <li>障害時の「聞くしかない」状態</li>
+    </ul>
+  </div>
+  <div class="col same">
+    <h3>変わらない</h3>
+    <ul>
+      <li>実装をAIに任せること</li>
+      <li>判断と責任が人間にあること(空欄として見えるようになるだけ)</li>
+      <li>守られない項目は削る、という改訂の前提</li>
+    </ul>
+  </div>
+</div>
+<p class="note">目安はチケットあたり +20分前後 + 定常運用分。基準を1周回した1回の実測からで、基準本文の数字ではない。</p>
+
+<!-- ============ 5. GLOSSARY ============ -->
+<h2>言葉<small>この1枚で使った9つ</small></h2>
+<details class="gloss">
+  <summary>開いて読む</summary>
+  <dl>
+    <dt>契約</dt><dd>呼び出しの約束。「この入力を渡せばこの出力が返る。失敗するときはこう失敗する」の3行。バグとはどちらかがこの約束を破ること</dd>
+    <dt>理解レベル</dt><dd>理解の深さの3段階。契約(一文で言える)/構造(データの流れを説明できる)/行(一行ずつ説明できる)。PRで範囲ごとに指定し、確定はドメインオーナー</dd>
+    <dt>不可逆系</dt><dd>やり直しが効かないもの。DBスキーマ変更・データ移行・課金・外部送信・削除。行レベル理解が必須</dd>
+    <dt>地図</dt><dd>何がどこに繋がっているか・契約・壊してはいけない条件・危険箇所を、判断に使える短さでまとめたもの。領域ごとに200行以内</dd>
+    <dt>設計の聞き取り</dt><dd>着手時に、エージェントが1問ずつ聞き、著者が答えて設計を決めること。曖昧さが尽きるまで。推奨回答なし。答えはそのまま設計メモになる</dd>
+    <dt>メモ外の決定</dt><dd>実装エージェントが、設計メモに無くて自分で決めたこと。完了報告の先頭で申告させ、著者がPR確認で受け入れ/差し戻し/裁定へ、に仕分ける</dd>
+    <dt>独立照合</dt><dd>実装方針を書いていない人(または実装を見せないAIセッション)が書いた期待値・テストを、実装と突き合わせること。不可逆系で必須</dd>
+    <dt>裁定</dt><dd>照合で仕様の読みが2通りに割れたとき、どちらが意図だったかを人間が決めること</dd>
+    <dt>結合テスト</dt><dd>箱の境界を越える契約を、依存の実物か実物相当を通して固定するテスト。箱の中を固定する単体テストと区別する</dd>
+  </dl>
+</details>
+
+<footer>
+  <p>基準本文とスキル6本: <a href="https://github.com/HawkClaws/agent-first-dev-standard">agent-first-dev-standard</a>(v0.43)。この1枚は導入判断用の要約で、正確な定義は基準本文が優先。</p>
+  <p>この基準自身の改訂も、提案を反証専任のAIに攻めさせて生き残ったものだけを採っている。採らなかった案は反証つきで CHANGELOG に残る。実測の無い効果は主張しない。上の2本の長さが同じなのはそのため。</p>
+</footer>
+
+</main>
 </body>
 </html>
